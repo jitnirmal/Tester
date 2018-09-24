@@ -1,0 +1,7 @@
+http://www.hawstein.com/posts/ctci-solutions-contents.html
+
+https://github.com/bloq/cpptrade
+
+https://github.com/lpvcpp/cpp_book
+
+https://godbolt.org/
