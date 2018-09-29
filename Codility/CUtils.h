@@ -74,57 +74,53 @@ void * myMemcpy(void *dest, const void *src, size_t len)
 	return (void*)dest;
 }
 
-// inline function to swap two numbers
-inline void swap(char *x, char *y) {
-	char t = *x; *x = *y; *y = t;
-}
-
-// function to reverse buffer[i..j]
-char* myReverse(char *buffer, int i, int j)
+void myStrReverse(char str[], int length)
 {
-	while (i < j)
-		swap(&buffer[i++], &buffer[j--]);
-
-	return buffer;
-}
-
-// Iterative function to implement itoa() function in C
-char* myItoa(int value, char* buffer, int base)
-{
-	// invalid input
-	if (base < 2 || base > 32)
-		return buffer;
-
-	// consider absolute value of number
-	int n = abs(value);
-
-	int i = 0;
-	while (n)
+	int start = 0;
+	int end = length - 1;
+	while (start < end)
 	{
-		int r = n % base;
+		std::swap(*(str + start), *(str + end));
+		start++;
+		end--;
+	}
+}
+char* myItoa(int num, char* str, int base)
+{
+	int i = 0;
+	bool isNegative = false;
 
-		if (r >= 10)
-			buffer[i++] = 65 + (r - 10);
-		else
-			buffer[i++] = 48 + r;
-
-		n = n / base;
+	if (num == 0)
+	{
+		str[i++] = '0';
+		str[i] = '\0';
+		return str;
 	}
 
-	// if number is 0
-	if (i == 0)
-		buffer[i++] = '0';
+	// In standard itoa(), negative numbers are handled only with  
+	// base 10. Otherwise numbers are considered unsigned. 
+	if (num < 0 && base == 10)
+	{
+		isNegative = true;
+		num = -num;
+	}
 
-	// If base is 10 and value is negative, the resulting string 
-	// is preceded with a minus sign (-)
-	// With any other base, value is always considered unsigned
-	if (value < 0 && base == 10)
-		buffer[i++] = '-';
+	// Process individual digits 
+	while (num != 0)
+	{
+		int rem = num % base;
+		str[i++] = (rem > 9) ? (rem - 10) + 'a' : rem + '0';
+		num = num / base;
+	}
 
-	buffer[i] = '\0'; // null terminate string
+	// If number is negative, append '-' 
+	if (isNegative)
+		str[i++] = '-';
 
-					  // reverse the string and return it
-	return myReverse(buffer, 0, i - 1);
+	str[i] = '\0'; // Append string terminator 
+				   // Reverse the string 
+	myStrReverse(str, i);
+	return str;
 }
 
 /*-----------------------------------------------------------------------------------*/
