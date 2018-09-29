@@ -1,8 +1,8 @@
 file(GLOB multithreading_SRCS *.cpp *.h)
 
-add_executable(mt_test
+add_executable(multiThreading
     ${multithreading_SRCS}
 )
 
 
-install(TARGETS mt_test DESTINATION bin)
+install(TARGETS multiThreading DESTINATION bin)

@@ -91,6 +91,47 @@ void Test2()
 	std::for_each(vi.begin(), vi.end(), [](const auto& num) {std::cout << num << " "; });
 }
 
+/// <summary>
+/// ALthough it seems to be quite efficient but its not. Because erase function deletes
+///  the elements and shifts all the elements in right by 1.So, it complexity will be O(n ^ 2).
+/// </summary>
+void removeAllMatchingElements_nonEfficient(std::vector<int> & vec, int elem)
+{
+	std::vector<int>::iterator it = vec.begin();
+	while (it != vec.end())
+	{
+		if (*it == elem)
+		{
+			it = vec.erase(it);
+		}
+		else
+			it++;
+	}
+}
+/// <summary>
+/// std::remove transforms the given range into a range with all the elements that compare not equal to 
+/// given element shifted to the start of the container. So, actually dont remove the matched elements.
+/// </summary>
+/// 
+void removeAllMatchingElements_Efficient(std::vector<int> & vec, int elem)
+{
+	vec.erase(std::remove(vec.begin(), vec.end(), elem), vec.end());
+}
+
+
+/*Generic function to find if an element of any type exists in list */
+template <typename T>
+bool contains(std::list<T> & listOfElements, const T & element)
+{
+	// Find the iterator if element in list
+	auto it = std::find(listOfElements.begin(), listOfElements.end(), element);
+	//return if iterator points to end or not. It points to end then it means element
+	// does not exists in list
+	return it != listOfElements.end();
+}
+
+
+
 void TestUtils()
 {
 	Test2();

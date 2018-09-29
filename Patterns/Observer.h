@@ -12,7 +12,8 @@ public:
 
 };
 
-template<class TEvent> 
+
+template<class TEvent>
 class Observable
 {
 public:
@@ -36,10 +37,19 @@ protected:
 		}
 	}
 
-	bool hasObservers(){
+	bool hasObservers() {
 		return !_observers.empty();
 	}
 	Observers _observers;
+};
+class MarketData
+{
+
+};
+class MarketBook : public Observer<MarketData> {
+	virtual void onEvent(MarketData& mdata) {
+
+	}
 };
 
 

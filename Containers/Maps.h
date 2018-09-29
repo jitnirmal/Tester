@@ -1,6 +1,7 @@
 #pragma once
 #include <unordered_map>
 #include <random>
+#include <map>
 #include <iostream>
 
 using namespace std;
@@ -85,8 +86,67 @@ void TestUnorderedMap()
 }
 
 
-int main(int argc, char *argv[])
+
+/// <summary>
+/// Map key
+/// </summary>
+
+struct MapKey
 {
+	int _id;
+	std::string _name;
+	MapKey(std::string name, int id) :
+		_id(id), _name(name)
+	{
+	}
+
+	bool operator<(const MapKey& key) const
+	{
+		if (key._id < _id)
+			return true;
+		return false;
+	}
+};
+
+
+struct KeyComparator
+{
+	bool operator()(const MapKey& lhs, const MapKey& rhs) const
+	{
+		return (lhs._id < rhs._id);
+	}
+};
+
+void TestMapKeys()
+{
+	std::map<MapKey, int> map1;
+	map1[MapKey("second", 2)] = 2;
+	map1[MapKey("first", 1)] = 1;
+	map1[MapKey("third", 3)] = 3;
+
+	std::map<MapKey, int, KeyComparator> map2;
+	map2[MapKey("third", 3)] = 3;
+	map2[MapKey("first", 1)] = 1;
+	map2[MapKey("second", 2)] = 2;
+
+
+	std::map<std::string, int> mapOfWords;
+	//Inserting data in std::map
+	mapOfWords.insert(std::make_pair("earth", 1));
+	mapOfWords.insert(std::make_pair("moon", 2));
+	mapOfWords["sun"] = 3;
+	mapOfWords["earth"] = 4; // Will siletly replace the value of already added key.
+
+	auto iter = mapOfWords.insert(std::make_pair("earth", 1));
+	// iter.second should be 4 only
+
+
+}
+
+void testMaps()
+{
+
+	TestMapKeys();
 	int i;
 	std::cin >> i;
 }

@@ -1,11 +1,4 @@
-set(BoostNW_SRCS
-	AsyncParallel.h
-	SyncIterative.h
-	SyncParallel.h
-	SyncTCPClient.h
-	Common.h
-	test.cpp
-)
+file(GLOB BoostNW_SRCS *.cpp *.h)
 
 add_executable(BoostNW_test
     ${BoostNW_SRCS}

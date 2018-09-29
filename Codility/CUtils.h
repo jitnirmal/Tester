@@ -28,6 +28,52 @@ bool isFibonacci(int n)
 		isPerfectSquare(5 * n*n - 4);
 }
 
+size_t mystrlen(char *str)
+{
+	size_t len = 0;
+	for (int i = 0; str[i] != 0; ++i)
+	{
+		len++;
+	}
+	
+	return(len);
+}
+
+int myatoi(char *str)
+{
+	int result = 0; 
+	for (int i = 0; str[i] != '\0'; ++i)
+		result = result * 10 + str[i] - '0';
+	return result;
+}
+
+char* mystrcpy(char *dest, const char* src)
+{
+	char *ret = dest;
+	while (*dest++ = *src++)
+		;
+	return ret;
+}
+
+char* mystrncpy(char *dst, const char*src, size_t n)
+{
+	char *ret = dst;
+	size_t i = 0;
+	while ((i++ != n) && (*dst++ = *src++));
+		;
+	return ret;
+}
+
+
+void * myMemcpy(void *dest, const void *src, size_t len)
+{
+	char *d = (char*)dest;
+	const char *s = (const char*)src;
+	while (len--)
+		*d++ = *s++;
+	return (void*)dest;
+}
+
 /*-----------------------------------------------------------------------------------*/
 //Write code to reverse a C - Style String. (C - String means that “abcd” is represented as five characters, including the null character.)
 void reverseString1(char* string)

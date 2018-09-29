@@ -3,6 +3,12 @@
 #include <memory>
 #include <functional>
 
+/// <summary>
+/// PIMPL helps in
+///     --- potentially improved build times by not processing unnecessary type definitions
+///     --- Even though private member functions can never be called from outside the class and its friends, 
+///					they do participate in name lookup and overload resolution and so can render calls invalid or ambiguous.
+/// </summary>
 class control_pimpl;
 
 class control

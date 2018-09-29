@@ -1,6 +1,6 @@
 #pragma once
 #include <iostream>
-https://www.boost.org/doc/libs/1_54_0/doc/html/atomic/usage_examples.html
+//https://www.boost.org/doc/libs/1_54_0/doc/html/atomic/usage_examples.html
 template <class T>
 class SingletonBase
 {

@@ -1,8 +1,8 @@
 file(GLOB containers_SRCS *.cpp *.h)
 
-add_executable(container_test
+add_executable(containers
     ${containers_SRCS}
 )
 
 
-install(TARGETS container_test DESTINATION bin)
+install(TARGETS containers DESTINATION bin)

@@ -22,7 +22,8 @@ struct tAllocator {
 	}
 };
 void TestAllocatorEx() {
-	std::vector<int, tAllocator<int>> v;
+//	std::vector<int, tAllocator<int>> v;
+	std::vector<int> v;
 	v.push_back(42); 
 	v.push_back(42); 
 	v.push_back(42); 

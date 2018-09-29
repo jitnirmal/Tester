@@ -1,0 +1,28 @@
+cmake_minimum_required(VERSION 2.8)
+
+set(BOOST_INCLUDE_DIR C:/local/boost_1_67_0)
+set(BOOST_LIBRARYDIR C:/local/boost_1_67_0/stage/lib)
+set(3RDPARTY_INCLUDE_DIR F:/2018/Coding/Tester/3rdParty/benchmark/include/benchmark)
+set(3RDPARTY_LIBRARYDIR F:/2018/Coding/Tester/3rdParty/build/src/Release)
+
+include_directories(${3RDPARTY_INCLUDE_DIR})
+include_directories(${BOOST_INCLUDE_DIR})
+link_directories(${BOOST_LIBRARYDIR})
+link_directories(${3RDPARTY_LIBRARYDIR})
+
+SET(USED_LIBS ${Boost_SYSTEM_LIBRARY} ${Boost_THREAD_LIBRARY} ${Boost_REGEX_LIBRARY} })
+
+project(myProject)
+add_subdirectory(syncDataStructures)
+add_subdirectory(Boost)
+add_subdirectory(BoostNW)
+add_subdirectory(multithreading)
+add_subdirectory(performance)
+add_subdirectory(containers)
+add_subdirectory(IO)
+add_subdirectory(Patterns)
+add_subdirectory(Utils)
+add_subdirectory(dataStructures)
+add_subdirectory(codility)
+add_subdirectory(modernCPP)
+add_subdirectory(main)

@@ -1,8 +1,8 @@
 file(GLOB Utils_SRCS *.cpp *.h)
 
-add_executable(Utils_test
+add_executable(utils
     ${Utils_SRCS}
 )
 
 
-install(TARGETS Utils_test DESTINATION bin)
+install(TARGETS utils DESTINATION bin)

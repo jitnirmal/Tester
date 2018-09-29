@@ -1,8 +1,8 @@
 file(GLOB datastructures_SRCS *.cpp *.h)
 
-add_executable(ds_test
+add_executable(dataStructures
     ${datastructures_SRCS}
 )
 
 
-install(TARGETS ds_test DESTINATION bin)
+install(TARGETS dataStructures DESTINATION bin)
