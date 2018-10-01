@@ -6,8 +6,57 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <list>
 #include <set>
 #include <map>
+#include <sstream>
+#include <iomanip>
+#include <string>
+#include <limits>
+/// <summary>
+/// template specializtion
+/// </summary>
+
+template<typename T> 
+std::string stringify(const T& x)
+{
+	std::ostringstream out;
+	out << x;
+	return out.str();
+}
+template<> 
+std::string stringify<bool>(const bool& x)
+{
+	std::ostringstream out;
+	out << std::boolalpha << x;
+	return out.str();
+}
+
+template<> 
+std::string stringify<double>(const double& x)
+{
+	const int sigdigits = std::numeric_limits<double>::digits10;
+	std::ostringstream out;
+	out << std::setprecision(sigdigits) << x;
+	return out.str();
+}
+template<> 
+std::string stringify<float>(const float& x)
+{
+	const int sigdigits = std::numeric_limits<float>::digits10;
+	std::ostringstream out;
+	out << std::setprecision(sigdigits) << x;
+	return out.str();
+}
+template<> 
+std::string stringify<long double>(const long double& x)
+{
+	const int sigdigits = std::numeric_limits<long double>::digits10;
+	std::ostringstream out;
+	out << std::setprecision(sigdigits) << x;
+	return out.str();
+}
+
 
 template <typename Container> 
 void print_container(Container& c)
@@ -45,6 +94,69 @@ private:
 	Container<T> _Q;
 };
 
+/// <summary>
+/// container-template that allows my users to supply the type of the underlying container that actually stores the values?
+/// 1. containers have  a value_type typedef. use it
+/// </summary>
+template<typename Underlying>
+class ContainerA {
+public:
+	
+	// typename value_type is the type of the values within a Foo-container
+	typedef typename Underlying::value_type  value_type;
+	//using value_type=Underlying::value_type; 
+	void insert(const typename value_type& x)
+	{
+		// ...code to insert x into data_...
+	}
+	// ...
+private:
+	Underlying data_;
+};
+
+/// <summary>
+/// If you want to allow your users to provide you with an underlying container that does not necessarily have a value_type typedef
+/// </summary>
+template<typename T, typename Underlying>
+class ContainerB {
+public:
+	// typename value_type is the type of the values within a Foo-container
+	typedef T  value_type;
+	void insert(const typename value_type& x)
+	{
+		// ...code to insert x into data_...
+	}
+	// ...
+private:
+	Underlying data_;
+};
+
+
+/// <summary>
+/// 
+/// </summary>
+/// 
+
+template<typename T>
+struct wrap_vector {
+	typedef std::vector<T> type;
+};
+template<typename T, template<typename> class C>
+class ContainerC {
+	typename C<T>::type data;  // trick to use a proxy
+};
+
+
+void testContainerA()
+{
+	ContainerA<std::vector<int> > aX;
+	ContainerA<std::list<double> > aY;
+
+	ContainerB<int, std::vector<int> > bX;
+	ContainerB<double, std::list<double> > bY;
+}
+
+
 template<template <typename... Args> class Container, 
 	typename... Types>
 class TestQ2
@@ -65,6 +177,8 @@ public:
 
 void TestContainer()
 {
+	testContainerA();
+
 	std::vector<int> vd = { 1,2,3,4,5};
 	print_container(vd);
 

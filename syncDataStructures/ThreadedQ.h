@@ -10,10 +10,10 @@
 template <typename T>
 class ThreadedQ {
 public:
-	ThreadedQ(std::string name) : _name(name), _q1(new std::queue<T*>), _q2(new std::queue<T*>), _done(true) {}
+	ThreadedQ(std::string name) : _name(name), _q1(new std::queue<T*>), _q2(new std::queue<T*>), _stopped(true) {}
 
 	~ThreadedQ() {
-		if (!_done.load()) {
+		if (!_stopped.load()) {
 			std::unique_lock<std::mutex> lock(_lock);
 			_q1->push(nullptr);
 			lock.unlock();
@@ -25,7 +25,7 @@ public:
 	}
 
 	bool Start() {
-		if (_done.load()) {
+		if (_stopped.load()) {
 			_thread = std::thread(&ThreadedQ<T>::run, this);
 			return true;
 		}
@@ -41,7 +41,7 @@ public:
 	}
 
 	bool Stop() {
-		if (!_done.load()) {
+		if (!_stopped.load()) {
 			std::unique_lock<std::mutex> lock(_lock);
 			_q1->push(nullptr);
 			lock.unlock();
@@ -54,7 +54,7 @@ public:
 private:
 
 	void run() {
-		_done = false;
+		_stopped = false;
 		try {
 			while (1) {
 				if (_q2->empty()) {
@@ -80,7 +80,7 @@ private:
 			std::cout << "Caught exception...." << std::endl;
 		}
 	Exit:
-		_done = true;
+		_stopped = true;
 		std::cout << "Graceful exit...." << std::endl;
 	}
 
@@ -91,7 +91,7 @@ private:
 	std::mutex							_lock;
 	std::condition_variable				_cond;
 	std::thread							_thread;
-	std::atomic<bool>					_done;
+	std::atomic<bool>					_stopped;
 };
 class Event
 {

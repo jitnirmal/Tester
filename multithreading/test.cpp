@@ -2,9 +2,11 @@
 #include "ThreadException.h"
 #include "atomics.h"
 
+#include "ThreadPool.h"
 int main()
 {
-	TestAtomics();
+	//TestAtomics();
+	TestThreadPool();
 	//TestThreadException();
 	int i;
 	std::cin >> i;
