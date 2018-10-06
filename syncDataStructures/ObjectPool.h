@@ -83,19 +83,19 @@ void TestAllocator()
 	//using LockType = Spinlock;
 	//using LockType = std::mutex;
 
-	MemoryPool<Object, Spinlock> mTest(10,false);
+	MemoryPool<Object, spinlock_mutex> mTest(10,false);
 	{
 		mTest.allocate();
 	}
 
 	constexpr int ITERATIONS{ 1000000 };
-	MemoryPool<Object, Spinlock> mpSL(10);
+	MemoryPool<Object, spinlock_mutex> mpSL(10);
 	testPool("Spinlock",mpSL);
 
 	MemoryPool<Object, std::mutex> mpML(10);
 	testPool("mutex", mpML);
 
-	MemoryPool<Object, Spinlock> mpNL(10, false);
+	MemoryPool<Object, spinlock_mutex> mpNL(10, false);
 	testPool("Nolock", mpNL);
 
 	{

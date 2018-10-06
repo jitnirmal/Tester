@@ -2,24 +2,28 @@
 #include <atomic>
 #include <thread>
 
-class Spinlock {
-	typedef enum { Locked, Unlocked } LockState;
-	std::atomic<LockState> state_;
+
+/// <summary>
+/// This code doesn’t call any blocking functions; lock() just keeps looping until the call to test_and_set() returns false
+/// </summary>
+class spinlock_mutex
+{
+	std::atomic_flag flag;
 public:
-	Spinlock() : state_(Unlocked) {}
-
-	void lock() {
-		while (state_.exchange(Locked, std::memory_order_acquire) == Locked) {
-			/* busy-wait */
-		}
+	spinlock_mutex() :
+		flag(ATOMIC_FLAG_INIT)
+	{}
+	void lock()
+	{
+		while (flag.test_and_set(std::memory_order_acquire));
 	}
-
-	void unlock() {
-		state_.store(Unlocked, std::memory_order_release);
+	void unlock()
+	{
+		flag.clear(std::memory_order_release);
 	}
 };
 
-Spinlock spin;
+spinlock_mutex spin;
 
 void workOnResource() {
 	spin.lock();

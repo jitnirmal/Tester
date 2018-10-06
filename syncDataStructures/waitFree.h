@@ -30,11 +30,11 @@ public:
 	void push(const T& data)
 	{
 		//auto node = _mpSL.allocate();
-		NodePtr node = new Node<T>(data);
+		NodePtr Node = new Node<T>(data);
 		NodePtr staleHead = _head.load(std::memory_order_relaxed);
 		do {
-			node->next = staleHead;
-		} while (!_head.compare_exchange_weak(staleHead, node, std::memory_order_release));
+			Node->next = staleHead;
+		} while (!_head.compare_exchange_weak(staleHead, Node, std::memory_order_release));
 	}
 	NodePtr pop_all()
 	{
@@ -49,7 +49,7 @@ public:
 
 	NodePtr pop_one()
 	{
-		node* old_tail = getTail();
+		Node* old_tail = getTail();
 		while (!head.compare_exchange_weak(old_head, old_head->next));
 		result = old_head->data;
 	}

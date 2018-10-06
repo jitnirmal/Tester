@@ -3,7 +3,7 @@
 #include <thread>
 #include <mutex>
 #include "SpinLock.h"
-
+//https://github.com/rigtorp/MPMCQueue
 template<typename T>
 class mpmc_bounded_queue
 {
