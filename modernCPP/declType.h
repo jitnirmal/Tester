@@ -3,8 +3,23 @@
 #include <vector>
 struct Object
 {
-	Object() = default;
-	
+	Object() {
+		std::cout << "Object(default)" << std::endl;
+	}
+	Object(const Object&) {
+		std::cout << "Object(&)" << std::endl;
+	}
+	Object(Object&&) {
+		std::cout << "Object(&&)" << std::endl;
+	}
+	Object& operator=(const Object&) {
+		std::cout << "Object(&) assgn" << std::endl;
+	}
+	Object& operator=(Object&&) {
+		std::cout << "Object(&&) assgn" << std::endl;
+	}
+
+
 	Object(int i, double d, std::string& s, std::vector<int>& v) :
 		_i(i), _d(d), _s(s), _v(v) 
 	{
@@ -52,6 +67,13 @@ void TestPerfectForwarding()
 
 void TestMove()
 {
+	auto func = [](Object&& o)
+	{
+		Object temp = std::move(o);
+	};
+
+	func(Object());
+
 	int x = 10;
 	int y = std::move(x);
 	/// <summary>

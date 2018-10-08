@@ -15,9 +15,9 @@ int main()
 //	TestPack();
 //	TestEmplace();
 //	TestFunctions();
-//	TestForward();
+	TestForward();
 //	TestMetaprogramming();
-	TestTraits();
+//	TestTraits();
 //	TestContainer();
 	int i;
 	std::cin >> i;

@@ -50,7 +50,7 @@ void process(const T& t)
 		cout << t << " is a non-integral type." << endl;
 	}
 }
-int TestType()
+void TestType()
 {
 	process(123);
 	process(2.2);
@@ -66,7 +66,7 @@ void same(const T1& t1, const T2& t2)
 	cout << (areTypesTheSame ? "the same types." : "different types.") << endl;
 }
 
-int TestRelatioship()
+void TestRelatioship()
 {
 	same(1, 32);
 	same(1, 3.01);
@@ -77,6 +77,43 @@ int TestRelatioship()
 /// <summary>
 /// SFINAE - Substituion failure is not an error
 /// </summary>
+/// <summary>
+/// Conditionally instantiate a class template depending on the template arguments
+/// We have used std::enable_if on line 7 and line 11 to force instantiation to succeed only for the appropriate template arguments
+/// This relies on Substitution Failure Is Not An Error (SFINAE),
+///  which states that failing to instantiate a template with some particular template arguments does not result in an error 
+///  and simply discards that instantiation.
+/// </summary>
+template <typename T, typename Enable = void>
+struct STest
+{
+	STest() { puts("general "); }
+};
+
+template <typename T>
+struct STest<T, typename std::enable_if<std::is_integral<T>::value>::type>
+{
+	STest() { puts("integral"); }
+};
+
+template <typename T>
+struct STest<T, typename std::enable_if<std::is_floating_point<T>::value>::type>
+{
+	STest() { puts("floats"); }
+};
+
+
+
+void TestSFINAEClass()
+{
+	//TestLoopUnRolling();
+	//TestTuple();
+	STest<int> si;
+	STest<float> sf;
+	STest<double> sd;
+	STest<std::string> ss;
+}
+
 
 template<typename T1, typename T2>
 typename enable_if<is_same<T1, T2>::value, bool>::type
@@ -95,7 +132,7 @@ check_type(const T1& t1, const T2& t2)
 	cout << "are different types." << endl;
 	return false;
 }
-int testSNIFAE()
+void testSNIFAE()
 {
 	check_type(1, 32);
 	check_type(1, 3.01);

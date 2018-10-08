@@ -1,6 +1,7 @@
 #pragma once
 #include <cstddef>
 #include <typeinfo>
+#include <iostream>
 
 /// /// <summary>
 /// //how to print something before main starts...

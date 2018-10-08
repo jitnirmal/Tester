@@ -12,6 +12,8 @@
 #include <sstream>
 #include <iomanip>
 #include <string>
+#include <type_traits>
+
 #include <limits>
 /// <summary>
 /// template specializtion
@@ -78,8 +80,39 @@ void TestTuple()
 	tuple_print(t1);
 }
 
+
+
+/// <summary>
+/// 
+/// 
+/// /// </summary>
+template<typename T, T Value>
+struct m_integral_constant
+{
+	using type = T;
+	static constexpr T value = Value;
+};
+
+
+template<class T>
+struct as_constref
+{
+	using type = T const&;
+};
+
+void testMUtils() {
+	using cref = as_constref<float>::type;
+	using ic  = m_integral_constant<int, 20>;
+
+	std::cout << ic::value << std::endl;
+}
+
+
+
+
 void TestMetaprogramming()
 {
 	//TestLoopUnRolling();
-	TestTuple();
+	//TestTuple();
+
 }
