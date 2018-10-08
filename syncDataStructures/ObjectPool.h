@@ -4,6 +4,15 @@
 #include <mutex>
 #include "SpinLock.h"
 
+/// <summary>
+/// C++ memory manager defaults to std::allocator, which calls::operator new() and ::operator delete(),
+/// ::operator new() and ::operator delete() have a very complex and difficult job, 
+///		-- allocating storage for all type of big and small objects, 
+///		-- for single - and multithreaded programs.
+/// Their design is a compromise to achieve such generality.Sometimes, a more specialized allocator can do a better job.
+/// Thus, Alloc can be specified as something other than the default to provide a specialized allocator for user objects.
+/// </summary>
+
 template <typename T,typename LockType>
 class MemoryPool
 {
