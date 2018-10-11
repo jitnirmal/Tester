@@ -6,6 +6,23 @@
 /// If the destructor of an object that is being destroyed during this process throws an exception, another stack 
 /// unwinding process should begin, which conflicts with the one already under way.Because of this, the program terminates abnormally.
 /// 
+/// Exception-safe functions offer one of three guarantees: 
+/// 1. basic guarantee - if an exception is thrown, everything in the program remains in a valid state.
+///							No objects or data structures become corrupted, and all objects are in an 
+///							internally consistent state(e.g., all class invariants are satisfied).
+///							However, the exact state of the program may not be predictable.
+///						For ex - if DB connection throws, DB connection goes to uninitialized, Rety, Error state
+/// 2. strong guarantee - if an exception is thrown, the state of the program is unchanged. 
+///							Calls to such functions are atomic in the sense that if they succeed, they
+///							succeed completely, and if they fail, the program state is as if they’d never been called.
+/// 3. the nothrow guarantee - promise never to throw exceptions, because they always do what they promise to do.
+/// 
+/// int doSomething() noexcept  // This doesn’t say that doSomething will never throw an exception; it says
+///						 that if doSomething throws an exception, it’s a serious error, and the terminate function should be called.†
+/// 
+	
+/// 
+/// 
 /// Rule of thumb
 /// 1. Use exceptions to indicate the errors that occur in constructors.
 /// 2. Do not throw or let exceptions leave destructors.
