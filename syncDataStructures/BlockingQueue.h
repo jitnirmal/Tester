@@ -26,9 +26,23 @@ public:
 		while (_queue.size() >= _limit) {
 			_signalItemRemoved.wait(lock);
 		}
-		_queue.push(data);
-		lock.unlock();
-		_signalItemAdded.notify_one();
+	  	_queue.push(data);
+		if (_queue.size() == 1)
+		{
+			_signalItemAdded.notify_one();
+		}
+	}
+	void push(const Data&& data)
+	{
+		queue_lock lock(_mutex);
+		while (_queue.size() >= _limit) {
+			_signalItemRemoved.wait(lock);
+		}
+		_queue.push(std::move(data));
+		if (_queue.size() == 1)
+		{
+			_signalItemAdded.notify_one();
+		}
 	}
 
 	bool pop(Data &popped_value)
@@ -37,9 +51,12 @@ public:
 		while (_queue.size()==0) {
 			_signalItemAdded.wait(lock);
 		}
-		popped_value = _queue.front();
+		popped_value = std::move(_queue.front());
 		_queue.pop();
-		_signalItemRemoved.notify_one();
+
+		if (_queue.size() == (size_limit-1)) {
+			_signalItemRemoved.notify_one();
+		}
 		return true;
 	}
 

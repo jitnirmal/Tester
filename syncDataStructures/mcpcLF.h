@@ -29,21 +29,29 @@ public:
 	{
 		Node* node;
 		size_t pos = head_.load(std::memory_order_relaxed);
-		for (;;)
+		while(true)
 		{
 			node = &buffer_[pos & buffer_mask_];
 			size_t seq = node->sequence_.load(std::memory_order_acquire);
 			intptr_t dif = (intptr_t)seq - (intptr_t)pos;
 			if (dif == 0)
 			{
+				// 1. mark the buffer for writing index
 				if (head_.compare_exchange_weak	(pos, pos + 1, std::memory_order_relaxed))
 					break;
 			}
 			else if (dif < 0)
+			{
+				//2.
 				return false;
+			}
 			else
+			{
+				//3.  this index is already used by another thread
 				pos = head_.load(std::memory_order_relaxed);
+			}
 		}
+		//update the record one 1 is successful
 		node->data_ = data;
 		node->sequence_.store(pos + 1, std::memory_order_release);
 		return true;
@@ -51,28 +59,33 @@ public:
 
 	bool dequeue(T& data)
 	{
-		Node* node;
+		Node* node(nullptr);
 		size_t pos = tail_.load(std::memory_order_relaxed);
-		for (;;)
+		while(true)
 		{
 			node = &buffer_[pos & buffer_mask_];
-			size_t seq =
-				node->sequence_.load(std::memory_order_acquire);
+			size_t seq = node->sequence_.load(std::memory_order_acquire);
+
 			intptr_t dif = (intptr_t)seq - (intptr_t)(pos + 1);
 			if (dif == 0)
 			{
-				if (tail_.compare_exchange_weak
-				(pos, pos + 1, std::memory_order_relaxed))
+				// 1. mark the buffer for reading index 
+				if (tail_.compare_exchange_weak (pos, pos + 1, std::memory_order_relaxed))
 					break;
 			}
 			else if (dif < 0)
+			{
+				//nothing to be read
 				return false;
+			}
 			else
+			{
+				//3. this index is already read by another thread
 				pos = tail_.load(std::memory_order_relaxed);
+			}
 		}
 		data = node->data_;
-		node->sequence_.store
-		(pos + buffer_mask_ + 1, std::memory_order_release);
+		node->sequence_.store(pos + buffer_mask_ + 1, std::memory_order_release);
 		return true;
 	}
 
@@ -83,14 +96,16 @@ private:
 		T                     data_;
 	};
 
-	static size_t const     cacheline_size = 64;
+	static const size_t     cacheline_size = 64;
 	typedef char            cacheline_pad_t[cacheline_size];
 
 	cacheline_pad_t         pad0_;
-	Node* const				buffer_;
-	size_t const            buffer_mask_;
+	const Node* 			buffer_;
+	const size_t			buffer_mask_;
+	
 	cacheline_pad_t         pad1_;
 	std::atomic<size_t>     head_;
+	
 	cacheline_pad_t         pad2_;
 	std::atomic<size_t>     tail_;
 	cacheline_pad_t         pad3_;
