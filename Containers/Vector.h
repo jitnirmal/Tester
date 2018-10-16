@@ -144,6 +144,11 @@ void TestPriorityQueue()
 ///					Map				34 ms			43 ms
 ///			If the table will change frequently, with insertions or deletions, re - sorting the vector - 
 ///				based table will consume any advantage it may have had in search time.
+///		c) Efficiency considerations thus lead us to conclude that insert is preferable to operator[] when adding an element to a map,
+///			because [], returned the reference to new Key and value, and in case the value is not there it 
+///				a) create a temporary default-constructed Widget object
+///				b) destruct that temporary object
+///				c) one to Widget's assignment operator
 ///			
 void TestMap()
 {

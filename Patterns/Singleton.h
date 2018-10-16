@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <mutex>
 //https://www.boost.org/doc/libs/1_54_0/doc/html/atomic/usage_examples.html
 template <class T>
 class SingletonBase
@@ -23,6 +24,47 @@ class Single : public SingletonBase<Single>
 public:
 	void demo() { std::cout << "demo" << std::endl; }
 };
+
+
+/// <summary>
+/// implementation with call once
+/// </summary>
+class CallOnceSingleton{
+
+  private:
+	  static std::once_flag initInstanceFlag;
+	  static CallOnceSingleton* instance;
+	  CallOnceSingleton() = default;
+	  ~CallOnceSingleton() = default;
+
+  public:
+	  CallOnceSingleton(const CallOnceSingleton&) = delete;
+	  CallOnceSingleton& operator=(const CallOnceSingleton&) = delete;
+
+	  static CallOnceSingleton* getInstance() {
+		  std::call_once(initInstanceFlag, CallOnceSingleton::initSingleton);
+		  return instance;
+	  }
+
+	  static void initSingleton() {
+		  instance = new CallOnceSingleton();
+	  }
+};
+
+CallOnceSingleton* CallOnceSingleton::instance = nullptr;
+std::once_flag CallOnceSingleton::initInstanceFlag;
+
+void testCallOnceSingleton() {
+
+	std::cout << std::endl;
+
+	std::cout << "MySingleton::getInstance(): " << CallOnceSingleton::getInstance() << std::endl;
+	std::cout << "MySingleton::getInstance(): " << CallOnceSingleton::getInstance() << std::endl;
+
+	std::cout << std::endl;
+
+}
+
 
 
 class IVisitor
