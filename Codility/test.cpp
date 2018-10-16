@@ -5,6 +5,7 @@
 #include "NextNumber.h"
 #include "Utils.h"
 #include "templateTest.h"
+#include "CRecipies.h"
 
 
 
@@ -19,5 +20,7 @@ int main(int argc, char *argv[])
 	//testParanthesesBalanced();
 	//TestUtils();
 	//TestBinaryCount();
-	templateTest();
+	//templateTest();
+	Test_C_Recipies();
+	
 }

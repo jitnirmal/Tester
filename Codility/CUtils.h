@@ -64,6 +64,32 @@ char* mystrncpy(char *dst, const char*src, size_t n)
 	return ret;
 }
 
+int mystrcmp(const char *s1, const char *s2)
+{
+	while (*s1 && (*s1 == *s2)) ++s1, ++s2;
+
+	return (*s1 > *s2) - (*s2  > *s1);
+}
+
+char * my_strcat(char *dest, const char *src)
+{
+	char *rdest = dest;
+
+	while (*dest)
+		dest++;
+
+	while (*dest++ = *src++)
+		;
+
+	return rdest;
+}
+
+void test_strcmp()
+{
+	const char* str1 = "nirmaljit";
+	const char* str2 = "nirmalji";
+	auto result = mystrcmp(str1, str2);
+}
 
 void * myMemcpy(void *dest, const void *src, size_t len)
 {
