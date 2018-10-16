@@ -10,6 +10,62 @@
 
 using namespace boost;
 
+/// <summary>
+/// listening server must do
+///		1. socket() : creates an endpoint for communication and returns a descriptor.
+///					-- AF_INET, address family(IP4, IP6), SOCK_STREAM (TCP), SOCK_DGRAM (UDP)
+///		2. bind()	: (HOST, PORT) port should be an integer from 1-65535 (0 is reserved)
+///		3. listen() :  It listens for connections from clients. 
+///						listen() has a backlog parameter. number of unaccepted connections that OS will allow before refusing new connections
+///		4. accept()	; blocking call, When a client connects, the server calls accept() to accept, or complete, the connection.
+///					-- accepts return new socket object and it’s the socket used to communicate with the client. 
+///						It’s distinct from the listening socket that the server is using to accept new connections:
+/// 
+///	client 
+///		connect() : The client calls connect() to establish a connection to the server and initiate the three-way handshake. 
+///					--- client can reach the server and vice-versa. 
+///		send()   :  data is exchanged between the client and server 
+///		recv()  :  data is exchanged between the client and server 
+///		close() : close both client and server
+/// 
+/// 
+/// Viewing Socket State
+///		a) netstat -an
+///		b) lsof -n | grep TCP | head -4
+///		
+/// TCP_NODELAY option on the socket, which disables the Nagle algorithm.
+/// TCP_CORK option when you're sure that you will be sending multiple data sets together
+/// Silly Window Syndrome (SWS) is a problem that can arise in poor implementations of the transmission control protocol (TCP)
+///  when the receiver is only able to accept a few bytes at a time or when the sender transmits data in small segments repeatedly.
+/// 
+/// </summary>
+/// 
+
+
+/// <summary>
+///  Boost ASIO : Asio stands for asynchronous input/output
+///		Boost.Asio starts asynchronous operations typically used to achieve greater efficiency. 
+///		With no need to wait for an operation to finish, a program can perform other tasks in between
+///		Boost.Asio for asynchronous data processing are based on 
+///			a) I/O services : the operating system API, single global class
+///			b) I/O objects : knows its I/O service and task oriented
+///				--  boost::asio::ip::tcp::socket
+///				--  boost::asio::serial_port
+///				-- boost::asio::steady_timer
+/// 
+/// 
+/// 
+///		-- Wtih boost::asio::io_service run() the associated handlers are invoked within the same thread. 
+///		-- By using multiple threads, a program can call run() multiple times. Once an asynchronous operation is complete, 
+///			the I/O service object will execute the handler in one of these threads. 
+///		
+///		-- On Windows, boost::asio::io_service is usually based on IOCP (I/O Completion Ports)
+///					on Linux, it is based on epoll(). 
+///		-- Having several I/O service objects means that several I/O completion ports will be used or epoll() will be called multiple times
+///			
+/// </summary>
+
+
 class APService {
 public:
 	APService(std::shared_ptr<asio::ip::tcp::socket> sock) :

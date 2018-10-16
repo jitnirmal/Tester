@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 /*
 TCP Echo server example in winsock
 Live Server on port 8888
@@ -6,7 +6,7 @@ Live Server on port 8888
 #pragma warning(disable:4996) 
 #include<stdio.h>
 #include<winsock2.h>
-
+//https://jvns.ca/blog/2017/06/03/async-io-on-linux--select--poll--and-epoll/
 /// <summary>
 /// select, poll and epoll  alternative for handling multiple concurrent sockets 
 /// epoll and poll are better than select because program does not have to inspect each socket for events of interest. 
@@ -18,6 +18,93 @@ Live Server on port 8888
 /// </summary>
 
 
+/// <summary>
+/// Programs using epoll often perform actions in this sequence:
+///		1. Create an epoll object
+///		2. Tell the epoll object to monitor specific events on specific sockets
+///		3. Ask the epoll object which sockets may have had the specified event since the last query
+///		4. Perform some action on those sockets
+///		5. Tell the epoll object to modify the list of sockets and/or events to monitor
+///		6. Repeat steps 3 through 5 until finished
+///		7. Destroy the epoll object
+/// 
+///	epoll has two modes of operation
+///		a. edge-triggered - call to epoll will return an event on a socket only once after the read or write event
+///						 occurred on that socket. The calling program must process all of the data associated with that
+///						 event without further notifications on subsequent calls to epoll.poll().
+///		b. level-triggered -repeated calls to epoll will result in repeated notifications of the event of interest, 
+///						until all data associated with that event has been processed.
+/// </summary>
+
+/// <summary>
+///  We can use select() and poll() to monitor file descriptors for regular files, terminals, pseudoterminals, pipes, FIFOs, sockets
+/// 
+/// SELECT
+///		The select() system call blocks until one or more of a set of file descriptors becomes ready
+///			-- int select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout);
+///			-- Returns number of ready file descriptors, 0 on timeout, or –1 on error
+///			-- fd_set data type is implemented as a bit mask
+///			-- all manipulation of file descriptor sets is done via four macros : FD_ZERO(), FD_SET(), FD_CLR(), and FD_ISSET()
+///			-- A file descriptor set has a maximum size FD_SETSIZE = 1024
+///			-- Since these structures are modified by the call, we must ensure that we reinitialize them if we are repeatedly 
+///				calling select() from within a loop.
+/// 
+/// 
+/// POLL
+///			-- The poll() system call performs a similar task to select(). The major difference between the two system calls lies 
+///				in how we specify the file descriptors to be monitored.
+///			-- int poll(struct pollfd fds[], nfds_t nfds, int timeout);
+///			-- The implementation of the poll() system call involves calling the kernel poll routine for each file descriptor 
+///					and placing the resulting information in the corresponding revents field.
+///			-- To implement select(), a set of macros is used to convert the information returned by the kernel poll routines
+///				 into the corresponding event types returned by select() :
+///			-- poll() places no intrinsic limit on the range of file descriptors that can be monitored. (select - 1024)
+///			-- Because the fd_set arguments of select() are value-result, we must reinitialize them if making repeated select() 
+///				calls from within a loop.By using separate events(input) and revents(output) fields, poll() avoids this requirement.
+///		
+/// Performance
+///			-- The performance of poll() and select() is similar when
+///					--The range of file descriptors to be monitored is small 
+///					--A large number of file descriptors are being monitored, but they are densely packed
+///			-- the performance of poll() is better than select when set of file descriptors to be monitored is sparse; 
+///				  only one or a few descriptors in the range 0 to N are being monitored.
+/// 
+/// Problems with select() and poll()
+///			-- On each call to select() or poll(), the kernel must check all of the specified file descriptors to see if they are ready.
+///			-- In each call to select() or poll(), the program must pass a data structure to the kernel describing all of the file descriptors 
+///				to be monitored, and, after checking the descriptors, the kernel returns a modified version of this data structure to the program. 
+///				the task of copying it from user to kernel space and back again consumes a noticeable amount of CPU time 
+///			--  After the call to select() or poll(), the program must inspect every element of the 	returned data structure to see which file descriptors are ready.
+///	-- This creates problems for programs that monitor large numbers of file descriptors. (poor scalability)
+/// 
+/// EPOLL (Linux only) : The performance of epoll scales much better than select() and poll() when monitoring large numbers of file descriptors
+///		The epoll API permits either level-triggered or edge-triggered notification. By contrast, select() and poll() provide only level - triggered notification
+/// 
+/// The epoll API consists of three system calls:
+///		 -- int epoll_create(int size); 	The size argument specifies number of file descriptors that we expect to monitor via the epoll instance
+///		 -- int epoll_ctl(int epfd, int op, int fd, struct epoll_event *ev);
+///					-- The fd argument identifies which of the file descriptors in the interest list is to have its settings modified
+///					-- The epoll_wait() system call returns  information about ready file descriptors from the epoll instance referred to by the file descriptor epfd.
+/// 
+/// Performance : number of file descriptors
+/// For the purposes of this test, FD_SETSIZE was changed to 16,384 in the glibc header files
+///		-- By contrast,the performance of epoll hardly declines as N grows large. (time in seconds)
+/// -------------------------------------------------------------------------------------------
+/// Number of descriptors monitored(N)			poll()			select()		epoll()
+/// -------------------------------------------------------------------------------------------
+/// 10												0.61			0.73			0.41
+/// 100												2.9				3.0				0.42
+///	1000											35				35				0.53
+/// 10000											990				930				0.66
+/// 
+/// 
+/// 1. Each time we call select() or poll(), we pass a data structure to the kernel that identifies all of the file descriptors that are to be monitored,
+///  and, on return, the kernel passes back a data structure describing the readiness of all of these descriptors.
+/// 2. epoll, we use epoll_ctl() to build up a data structure in kernel space that lists the set of file descriptors to be monitored. Once this data 
+///		structure has been built, each later call to epoll_wait() doesn’t need to pass any information about file descriptors to the kernel, and the call 
+///		returns information about only those descriptors that are ready.
+/// 3. select/poll perform poorly when N is greater than 100..
+/// </summary>
 
 #pragma comment(lib, "ws2_32.lib") //Winsock Library
 

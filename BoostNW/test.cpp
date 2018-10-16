@@ -1,23 +1,14 @@
+#include <boost/interprocess/shared_memory_object.hpp>
 #include <iostream>
-#include "ASyncParallel.h"
-#include "SyncIterative.h"
-#include "SyncParallel.h"
-#include "SyncTCPClient.h"
 
-
+using namespace boost::interprocess;
 
 int main()
 {
-	std::vector<std::thread> services;
-	services.push_back(std::thread(TestAsyncParallel));
-	//services.push_back(std::thread(TestSyncIterative));
-	//services.push_back(std::thread(TestSyncParallel));
-	services.push_back(std::thread(TestSyncTCPClient));
-	
-
-	for (auto& service : services)
-	{
-		service.join();
-	}
-	return 0;
+	shared_memory_object shdmem{ open_or_create, "Boost", read_write };
+	shdmem.truncate(1024);
+	std::cout << shdmem.get_name() << '\n';
+	offset_t size;
+	if (shdmem.get_size(size))
+		std::cout << size << '\n';
 }
