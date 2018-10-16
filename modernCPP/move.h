@@ -3,7 +3,7 @@
 #include <iostream>  
 #include <algorithm>  
 #include <vector> 
-
+#include <deque>
 /// -------------------------------------------------------------------------------------------------------------------------------------
 ///       FAQ-1          STD::MOVE 
 /// -------------------------------------------------------------------------------------------------------------------------------------
@@ -113,6 +113,63 @@ void TestMove() {
 	anotherObject2 = std::move(anObject); // Calls move assignment operator
 }
 
+/// <summary>
+/// test with queue
+/// </summary>
+
+
+template<typename T>
+struct Queue
+{
+	void Enqueue(const T& value)
+	{
+		// this will never use move constructor as l value reference
+		// removing this, lvalue will not compile
+		_q.push_front(std::move(value));
+	}
+	void Enqueue(T&& value)
+	{
+		// this will use move constructor for temporaries, or can cast lvalue to rvalue
+		_q.push_front(std::move(value));
+	}
+	void Dequeue(T& value)
+	{
+		value = std::move(_q.front());
+		_q.pop_front();
+	}
+	std::deque<T> _q;
+};
+
+struct A {
+	A(int x) :val(x) { puts("const"); }
+	A(const A&) { puts("copy const"); }
+	A(A&&) { puts("move const"); }
+	A& operator=(const A&) { puts("assign"); return *this; }
+	A& operator=(A&&) { puts("move assign"); return *this; }
+	~A() { puts("dest"); }
+
+
+	int val;
+};
+
+void testMove()
+{
+	Queue<A> Q;
+	A a(1);
+	Q.Enqueue(a);
+	Q.Enqueue(A(2));
+
+	A result(0);
+
+	Q.Dequeue(result);
+	result.val = 10;
+	std::cout << result.val << std::endl;
+}
+
+
+/// <summary>
+/// memory block
+/// </summary>
 template<typename T>
 class MemoryBlock
 {

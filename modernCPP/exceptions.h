@@ -30,7 +30,7 @@
 /// 4. Prefer throwing either standard exceptions or your own exceptions derived from std::exception
 /// 
 /// a. std::logic_error : error in the program logic
-///        --------- std::invalid_argument, std::out_of_range, and std::length_error
+///        --------- std::invalid_argument, std::out_of_range, and std::length_error, 
 /// b. std::runtime_error : error beyond the scope of the program
 ///        --------- std::overflow_error, std::underflow_error, std::system_error
 /// c. std::bad_ : represent various errors in a program,
@@ -40,8 +40,36 @@
 /// d. When throwing an exception
 ///		--- throw an object by value. Avoid throwing a pointer, because if you throw a pointer, you need to deal with memory management issues
 ///    ---  Throwing by value - the compiler itself takes responsibility for the intricate process of managing memory for the exception object.
-///    ---  Catch by reference - Catching a plain value by value results in slicing at the catch site
+///    ---  Catch by reference - Catching a plain value by value results in slicing at the catch site and 2 copies of the thrown object are made
+///	   --- NOTE : Regardless of whether the exception is caught by value or by reference, a copy
+///				of thrownObject will be made, and it is the copy that is passed to the catch clause.
+///				This must be the case, because thrownObject will go out	of scope once control leaves throwingFunction, and when  
+///				thrownObject goes out of scope, its destructor will be called.
 ///    ---  When rethrowing an exception e, prefer throw; instead of throw e; because it preserves polymorphism of the rethrown object.
+/// e. Prefer rethrowing some exception
+///				1. catch (Base& b) {... // handle the exception  throw; } //rethrows the current exception
+///				2. catch (Base& b) {	... // handle the exception	throw b;} // propagate a copy of the exception
+///					2, is worse in performance and cause derived class exception to be passed as base.
+/// 
+/// 
+///	Performance : 1. If you know that no part of your program uses try, throw, or catch, and you also know that no library
+///			with which you’ll link uses try, throw, or catch, you might as well compile without exception - handling support 
+///			and save yourself the size and speed penalty you’d otherwise probably be assessed for a feature you’re not using.
+///			-fno-exceptions : Note also that stack unwinding will not be performed if an exception is not handled; 
+///					a) All exception handling in STL libraries are removed; throws are replaced with abort() calls
+///					b) Stack unwind data and code is removed. This saves some code space, and may make register allocation 
+///					marginally easier for the compiler (but I doubt it'll have much performance impact). 
+///					Notably, however, if an exception is thrown, and the library tries to unwind through 
+///					-fno-exceptions code, it will abort at that point, as there is no unwind data.
+///			2. A second cost of exception-handling arises from try blocks, and you pay it whenever you use one, 
+///					a) expect your overall code size to increase by 5 - 10 % 
+///					b) and your runtime to go up by a similar amount if you use try blocks.
+///					This assumes no exceptions are thrown; what we’re discussing here is just the
+///					cost of having try blocks in your programs.To minimize this cost, you should avoid unnecessary try blocks.
+///			3. 	Returning from a function by throwing an exception may be 3 times slower
+///				
+///			
+
 /// </summary>
 struct A {
 	~A() noexcept(false)

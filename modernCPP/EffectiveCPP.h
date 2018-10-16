@@ -46,6 +46,13 @@
 ///		1. TMP can be used to generate custom code based on combinations of policy choices, 
 ///		and it can also be used to avoid generating code inappropriate for particular types.
 
+/// <summary>
+/// Distinguish between prefix and postfix forms of increment and decrement operators.
+///		UPInt& operator++(); // prefix --
+///		const UPInt operator++(int); // postfix -, this is generally less efficient due to temporary object
+/// </summary>
+
+
 ///  INLINING
 /// 1. Limit most inlining to small, frequently called functions. This facilitates debugging and binary upgradability,
 ///		 minimizes potential code bloat, and maximizes the chances of greater program speed
