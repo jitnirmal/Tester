@@ -5,7 +5,21 @@
 #include <algorithm>
 #include <functional>
 #include <vector>
+#include <list>
 
+/// <summary>
+/// 1) std::sort Sorts the elements in the range [first, last) in ascending order. The order of equal elements is not guaranteed to be preserved.
+///		a.  Elements are compared using operator< or binary comparison function comp.
+/// 2) std::stable_sort : Sorts the elements in the range [first, last) in ascending order. 
+///			-- The order of equivalent elements is guaranteed to be preserved
+/// 3) std::partial_sort : Rearranges elements such that the range [first, middle) contains the sorted middle - 
+///			first smallest elements in the range [first, last). 
+///			The order of equal elements is not guaranteed to be preserved.
+///			The order of the remaining elements in the range[middle, last) is unspecified.
+/// 4) nth_element partially sorts the range [first, last) in ascending order
+///			-- you need to identify the top n elements without putting them in order (top 3rd, median etc)
+/// 5) stable_partition :
+/// /// </summary>
 
 template<class ForwardIt, class Compare>
 ForwardIt min_element(ForwardIt first, ForwardIt last,

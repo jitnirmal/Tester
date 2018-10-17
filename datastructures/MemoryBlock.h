@@ -32,10 +32,11 @@ public:
 	{
 		if (this != &other)
 		{
-			delete[] _data;
+			auto origPtr = _data;
 			_length = other._length;
 			_data = new int[_length];
 			std::copy(other._data, other._data + _length, _data);
+			delete[] origPtr;
 		}
 		return *this;
 	}

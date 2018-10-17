@@ -14,24 +14,31 @@ struct Node
 		: data{ std::move(d) }, prev{ p }, next{ n } { }
 };
 
-template <typename Object>
+template <typename T>
 class const_iterator
 {
 public:
-	const_iterator() : current{ nullptr }
+	const_iterator(Node* ptr=nullptr) : current{ ptr }
 	{ }
 
-	const Object & operator* () const
+	const T& operator* () const
 	{
 		return current->data;
 	}
+	const T* operator-> () const
+	{
+		return current;
+	}
 
-	const_iterator & operator++ ()
+
+	// ++x - prefix
+	const_iterator& operator++ ()
 	{
 		current = current->next;
 		return *this;
 	}
 
+	// x++ - postfix
 	const_iterator operator++ (int)
 	{
 		const_iterator old = *this;
@@ -48,32 +55,29 @@ public:
 		return !(*this == rhs);
 	}
 
-protected:
+private:
 	Node * current;
-	
-	const_iterator(Node *p) : current{ p }
-	{ }
-
-	friend class List<Object>;
+	friend class List<T>;
 };
 
-template <typename Object>
-class iterator : public const_iterator
+template <typename T>
+class iterator 
 {
 public:
-	iterator()
+	iterator(Node* ptr = nullptr) : current{ ptr }
 	{ }
 
-	Object & operator* ()
+	T& operator* ()
 	{
-		return const_iterator::retrieve();
+		return current->data;
 	}
-	const Object & operator* () const
+	
+	T* operator* ()
 	{
-		return const_iterator::operator*();
+		return current;
 	}
 
-	iterator & operator++ ()
+	iterator& operator++ ()
 	{
 		this->current = this->current->next;
 		return *this;
@@ -86,11 +90,9 @@ public:
 		return old;
 	}
 
-protected:
-	iterator(Node *p) : const_iterator{ p }
-	{ }
-
-	friend class List<Object>;
+private:
+	Node * current;
+	friend class List<T>;
 };
 
 template <typename Object>

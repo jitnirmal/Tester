@@ -53,6 +53,8 @@ public:
 	}
 
 	T& operator*() const noexcept {
+		// making function const does not pose any restriction
+		// that returned pointer cannot be changed
 		return *_ptr;
 	}
 

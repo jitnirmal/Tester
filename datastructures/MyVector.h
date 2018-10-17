@@ -1,5 +1,8 @@
+//https://codereview.stackexchange.com/questions/180058/a-vector-implementation
 #pragma once
 #include <algorithm>
+
+
 
 template <typename T>
 class Vector
@@ -9,6 +12,16 @@ public:
 		_capacity{ initSize + SPARE_CAPACITY }
 	{
 		_data = new T[_capacity];
+	}
+
+	template<typename T>
+	inline Vector<T>::Vector(std::initializer_list<T> init)
+	{
+		_size = init.size();
+		_capacity = _size + SPARE_CAPACITY;
+		_data = new T[_capacity];
+		for (int k = 0; k < _size; ++k)
+			_data[k] = init[k];
 	}
 
 	Vector(const Vector & rhs) : _size{ rhs._size },

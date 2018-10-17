@@ -2,6 +2,10 @@
 #include <thread>
 #include <chrono>
 #include "sort.h"
+#include "QSort.h"
+#include "c_linked_list.h"
+#include "LinkedList.h"
+/*
 #include "MyWeakPointer.h"
 #include "LinkedList.h"
 #include "MyUniquePtr.h"
@@ -29,16 +33,19 @@ void TestThread()
 
 }
 
-
+*/
 
 int main(int argc, char *argv[])
 {
 	int i = 0;
-	printf("%d %d %d\n", i++, i++, i++);
+	testCList();
+	testLinkList();
+//	testSort();
+//	printf("%d %d %d\n", i++, i++, i++);
 
 
-	std::cout<<"testing multithreading "<<std::endl;
-	testWeakPointer();
+//	std::cout<<"testing multithreading "<<std::endl;
+	//testWeakPointer();
 	//	TestHashTable();
 	//Tes_C_tUtils();
 //	TestUtils();

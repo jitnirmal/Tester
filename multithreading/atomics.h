@@ -7,26 +7,40 @@
 #include <iostream>
 
 /// <summary>
+/// std::atomic provides a standard mechanism to update an arbitrary data structure, so long as it is copy constructable or move constructable.
+///		Any specialization of std::atomic must provide the following functions for any type T :
+///			load() - copies the T object out of the std::atomic<T> atomically.
+///			store() - copies a T object into the std::atomic<T> atomically.
+///			is_lock_free() -returns bool true if all operations defined on this type are implemented without the use of mutual exclusion, as by a single read - modifywrite
+///
+///		Intel-architecture PCs have a variety of read-modify-write instructions, and the cost of the atomic access
+///		 depends on the memory fence, with some fences having no cost at all.
+///		-- Atomics generally may be 14 times slower that direct updates
+/// 
 /// Sequential consistency is a consistency model that requires on multiprocessor system, 
 /// -- all instructions are executed in some order 
 /// -- all writes become instantly visible throughout the system
 /// 
+///	 (Note)	The memory fence blocks forward progress until all writes in flight have completed.
+///		In reality, only writes to shared locations need be completed, but neither C++ nor x86 - compatible processors have
+///		the means to identify this more restrictive set of locations, especially as the set varies from one thread to the next.
+/// 
 /// memory_order_relaxed
 ///		-- no synchronization or ordering constraints
 ///     -- only atomicity is required from this operation
-/// memory_order_consume
-///     -- no reads or writes in the current thread that are dependent on the value currently loaded can be reordered 
-///			before this load operation.
-///		-- Writes to data dependent variables in other threads that release the same atomic variable are visible in the current thread
-/// memory_order_acquire (load operation)
-///     -- performs the acquire operation on the affected memory location
+/// memory_order_acquire (load operation) - acquire all work done by other threads.
 ///     -- no reads or writes in the current thread can be reordered before this load.
-///		-- All writes in other threads that release the same atomic variable are visible in the current thread
-/// memory_order_release (store operation)
-///     -- performs the release operation on the affected memory location
+///		-- it waits for store operations currently in flight between the processor and main memory to complete
+///		-- less expensive than the default full fence.
+/// memory_order_consume
+///		-- potentially weaker (and faster) form of memory_order_acquire that requires only that the current load 
+///			take place before other operations that are data - dependent on it.
+///		-- For instance, when a load of a pointer is marked memory_order_consume, subsequent operations that dereference 
+///			this pointer won’t be moved before it.
+/// memory_order_release (store operation) - release all work done by this thread to this point.
 ///     -- no reads or writes in the current thread can be reordered after this store.
-///		-- All writes in current threads are visible in other threads that aquire the same atomic variable 
-///     -- writes that carry a dependency to the atomic variable become visible in other threads that consume the same atomic.
+///		-- it waits for store operations currently in flight within this thread to complete to be visible by other threads 
+///		-- less expensive than the default full fence.
 /// memory_order_acq_rel
 ///		-- read-modify-write operation (both aquire and release
 ///     -- No memory reads or writes in the current thread can be reordered before or after this store

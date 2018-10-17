@@ -68,46 +68,46 @@ public:
 	
 private:
 
-	void traverseLevelOrder(Node<T>* node) {
+	void traverseLevelOrder(Node<T>* Node) {
 		std::list<Node<T>*> nodes;
 		nodes.push_back(_root);
 
 		while (!nodes.empty()) {
-			auto node = nodes.front();
+			auto Node = nodes.front();
 			nodes.pop_front();
 
-			std::cout << node->value << " ";
+			std::cout << Node->value << " ";
 
-			if (node->left != nullptr) {
-				nodes.push_back(node->left);
+			if (Node->left != nullptr) {
+				nodes.push_back(Node->left);
 			}
 
-			if (node->right != nullptr) {
-				nodes.push_back(node->right);
+			if (Node->right != nullptr) {
+				nodes.push_back(Node->right);
 			}
 		}
 	}
 
-	void traverseInOrder(Node<T>* node) {
-		if (node != nullptr) {
-			traverseInOrder(node->left);
-			std::cout << node->value << " ";
-			traverseInOrder(node->right);
+	void traverseInOrder(Node<T>* Node) {
+		if (Node != nullptr) {
+			traverseInOrder(Node->left);
+			std::cout << Node->value << " ";
+			traverseInOrder(Node->right);
 		}
 	}
 	
-	void traversePreOrder(Node<T>* node) {
-		if (node != nullptr) {
-			std::cout << node->value <<" ";
-			traversePreOrder(node->left);
-			traversePreOrder(node->right);
+	void traversePreOrder(Node<T>* Node) {
+		if (Node != nullptr) {
+			std::cout << Node->value <<" ";
+			traversePreOrder(Node->left);
+			traversePreOrder(Node->right);
 		}
 	}
-	void traversePostOrder(Node<T>* node) {
-		if (node != nullptr) {
-			traversePostOrder(node->left);
-			traversePostOrder(node->right);
-			std::cout << node->value << " ";
+	void traversePostOrder(Node<T>* Node) {
+		if (Node != nullptr) {
+			traversePostOrder(Node->left);
+			traversePostOrder(Node->right);
+			std::cout << Node->value << " ";
 		}
 	}
 
