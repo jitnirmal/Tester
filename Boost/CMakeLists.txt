@@ -1,11 +1,4 @@
-set(Boost_SRCS
-   Serialization.h
-   Tuple.h
-   LockFree.h
-   test.cpp	
-   container_bmark.h
-)
-
+file(GLOB Boost_SRCS *.cpp *.h)
 add_executable(Boost_test
     ${Boost_SRCS}
 )

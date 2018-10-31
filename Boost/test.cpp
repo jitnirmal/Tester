@@ -3,12 +3,13 @@
 #include "LockFree.h"
 #include <iostream>
 
-
+#include "BGraph.h"
 #include <cassert>
 #include <memory>
 
 int main()
 {
+	testGraphTopologicalSort();
 	/*constexpr auto SIZE{ 100u };
 
 	std::vector<Expensive> expensiveTable(SIZE);
