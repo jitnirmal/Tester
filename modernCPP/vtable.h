@@ -30,7 +30,16 @@
 ///			and you can access the type_info object for a class by using the typeid operator.
 ///			-- There only needs to be a single copy of the RTTI information for each class, only if that type has at least one virtual function
 ///			-- the space cost of RTTI is an additional entry in each class vtbl plus the cost of the storage for the type_info object for each class.
+///				--This penalty does not have a fixed cost. It is dependent on the complexity of the function and the frequency with which it is invoked.
+///			-- When you throw in multiple inheritance and/or virtual inheritance, object creation involves an additional cost. 
+///				This additional cost comes from having to set multiple vptrs and added indirection of virtual function invocation.
 /// 
+/// 
+/// Virtual functions seem to inflict a performance cost in several ways:
+///		1. The vptr must be initialized in the constructor.
+///		2. A virtual function is invoked via pointer indirection.We must fetch the pointer to the function table and then access the correct function offset.
+///		3. Inlining is a compile - time decision.The compiler cannot inline virtual functions whose resolution takes place at run - time.
+///			--Evaluating the performance penalty of a virtual function is equivalent to evaluating the penalty resulting from failure to inline that same function. 
 /// </summary>
 
 /// C1’s vtabl 

@@ -8,6 +8,8 @@
 #include "Metaprogramming.h"
 #include "memory.h"
 #include "Traits.h"
+#include "lambda.h"
+#include "function.h"
 int main()
 {
 //	TestMemory();
@@ -15,10 +17,12 @@ int main()
 //	TestPack();
 //	TestEmplace();
 //	TestFunctions();
-	TestForward();
+//	TestForward();
 //	TestMetaprogramming();
 //	TestTraits();
 //	TestContainer();
+//	TestLamdaFunction();
+	TestFunction();
 	int i;
 	std::cin >> i;
 }
