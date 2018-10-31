@@ -5,7 +5,7 @@
 //https://stackoverflow.com/questions/40559246/find-minimum-cost-of-tickets
 
 int calculateMinCost(std::vector<int>& arr) {
-	std::map<int, int> DayAndTicket;
+	//std::map<int, int> DayAndTicket;
 
 	bool isDayWithTrip[31] = { false };
 	for (auto& dayWithTrip : arr) {
