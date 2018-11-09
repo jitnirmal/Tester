@@ -75,13 +75,6 @@ public:
 	virtual void f5(char *str); // new virtual function
 };
 
-/// <summary>
-/// the dreaded multiple inheritance diamond
-/// </summary>
-class A {  };
-class B : virtual public A {  };
-class C : virtual public A {  };
-class D : public B, public C {  };
 
 
 /// <summary>
@@ -108,5 +101,6 @@ void TestStackRestrictedObjects() {
 
 void TestVTable()
 {
+	
 }
 

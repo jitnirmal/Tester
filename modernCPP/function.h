@@ -9,6 +9,10 @@
 using namespace std;
 
 /// <summary>
+/// auto -- the compiler detects the type of the expression on the right side, and replaces auto with the detected type (with some exception, read comments)
+/// </summary>
+
+/// <summary>
 /// The signature of a std::function is defined as follows:
 ///			--- std::function< return_type ( parameter0, parameter1...) > 
 ///			--- std::function returning nothing and having no parameters is defined like this...
@@ -21,6 +25,17 @@ using namespace std;
 ///			-- std::function can hold any lambda function which has the same signature, that is, it has the same parameters and the same return value
 ///			-- what is captured by the lambda does not affect its signature, therefore both lambdas with and without captures can be assigned to 
 ///				the same std::function
+/// 
+/// Performance implications - 
+/// 1)  An std::function cannot be inlined
+///			-- The flexible design of  std::function make it nearly impossible for the compiler to inline a function wrapped in a std::function
+///				This overhead can have an impact on the performance if small functions wrapped in std::function are being called very frequently
+/// 2)  An std::function heap allocates and captures variables
+///          -- If a lambda function with captured variables/references is assigned to a std::function
+///					the std::function will, in most cases, allocate space on the heap to store the captured variables 
+///			-- This means that not only is there a slight performance penalty due to heap allocation and 
+///				the execution of std::function but also that it is slower, as heap allocation implies cache misses
+/// 3) Calling a std::function is generally a bit slower than executing a lambda as a little more code is involved
 /// </summary>
 
 

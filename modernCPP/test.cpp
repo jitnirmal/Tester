@@ -10,6 +10,8 @@
 #include "Traits.h"
 #include "lambda.h"
 #include "function.h"
+#include "testCPP.h"
+//#include "vtable.h"
 int main()
 {
 //	TestMemory();
@@ -22,7 +24,9 @@ int main()
 //	TestTraits();
 //	TestContainer();
 //	TestLamdaFunction();
-	TestFunction();
+//	TestFunction();
+	TestCPP();
+//	TestVTable();
 	int i;
 	std::cin >> i;
 }

@@ -7,8 +7,10 @@
 /// -------------------------------------------------------------------------------------------------------------------------------------
 ///       FAQ-1          STD::MOVE 
 /// -------------------------------------------------------------------------------------------------------------------------------------
-/// 1. Move semantics are a key feature that drives the performance improvements of modern C++.
+/// 1. Move semantics are a key feature that drives the performance improvements of modern C++. 
+///		-- avoid redundant deep-cloning operations with high performance costs
 /// 2. They enable moving, rather than copying, resources or , especially, objects which are expensive to copy.
+///		-- When moving an object, the destination object steals the resource straight from the source object, and the source object is reset
 /// 3. It requires that classes implement a move constructor and assignment operator.
 /// 4. Move
 ///		a. represents a performance benefit for objects that are too large to copy(such as a string or container) 
@@ -31,6 +33,8 @@
 ///    * std::move not only doesn’t actually move anything, also it doesn’t even guarantee that the object it’s casting will be eligible to be moved.
 /// After an object is moved, it must remain in a valid state  but no specific requirement regarding the state 
 /// (usually default 0, nullptr, false)
+/// 13. Do not forget to mark your move-constructors and move-assignment operators as noexcept (unless they might throw an exception, of course). 
+///		Not marking them noexcept prevents STL containers and algorithms from utilizing them and resorts to a regular copy/assignment under certain conditions.
 /// </summary>
 
 /// -------------------------------------------------------------------------------------------------------------------------------------

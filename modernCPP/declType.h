@@ -1,6 +1,14 @@
 #pragma once
 #include <iostream>
 #include <vector>
+#include <optional>
+
+std::optional<std::string> create(bool b) {
+	if (b)
+		return "Valid";
+	return {};
+}
+
 struct Object
 {
 	Object() {
@@ -64,6 +72,23 @@ void TestPerfectForwarding()
 	//oc.AddObject(1, 2.f, "test", v); // this will give compilation error
 }
 
+/// <summary>
+/// Const propagation for pointers
+/// </summary>
+class ConstPtr {
+public:
+	ConstPtr(int* ptr) : ptr_{ ptr } {}
+	auto set_ptr_val(int v) const {
+		*ptr_ = v; // Compiles despite function being declared const!
+	}
+private:
+	int* ptr_{};
+};
+
+void testConstPointer() {
+	const auto foo = ConstPtr(new int);
+	foo.set_ptr_val(42);
+}
 
 void TestMove()
 {
