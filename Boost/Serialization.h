@@ -176,12 +176,12 @@ void testManipulators()
 	std::cout << false << std::endl; // false
 	std::cout << std::noboolalpha << false << std::endl; // 0
 
-	std::cout << std::right << std::setw(10) << "right"
+	std::cout << std::rightChild << std::setw(10) << "right"
 		<< std::endl;
 	std::cout << std::setw(10) << "text" << std::endl;
-	std::cout << std::left << std::setw(10) << "left" << std::endl;
+	std::cout << std::leftChild << std::setw(10) << "left" << std::endl;
 
-	std::cout << std::right
+	std::cout << std::rightChild
 		<< std::setfill('.') << std::setw(10)
 		<< "right" << std::endl;
 

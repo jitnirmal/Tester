@@ -2,14 +2,14 @@
 #include "container_bmark.h"
 #include "LockFree.h"
 #include <iostream>
-
+#include "Dependency.h"
 #include "BGraph.h"
 #include <cassert>
 #include <memory>
 
 int main()
 {
-	testGraphTopologicalSort();
+	//testGraphTopologicalSort();
 	/*constexpr auto SIZE{ 100u };
 
 	std::vector<Expensive> expensiveTable(SIZE);
@@ -23,7 +23,8 @@ int main()
 	//testAtomicThreadCoordination();
 	//testLockFreeRingBuffer();
 	//testBlockingQueue();
-	testThreadCreation();
+	//testThreadCreation();
+	testDependencyGraph();
 	int i;
 	std::cin >> i;
 
