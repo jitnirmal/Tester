@@ -6,6 +6,7 @@
 #include "Utils.h"
 #include "templateTest.h"
 #include "CRecipies.h"
+#include "maxSum.h"
 
 
 
@@ -21,6 +22,7 @@ int main(int argc, char *argv[])
 	//TestUtils();
 	//TestBinaryCount();
 	//templateTest();
-	Test_C_Recipies();
+	//Test_C_Recipies();
+	testSubArrayMaxSum();
 	
 }

@@ -100,9 +100,9 @@ void testPointers()
 
 	char* s[] = { "nirmal","jit", "singh","rauni" };
 	char **ptr[] = { s + 3,s + 2, s + 1, s };
-	char ***p = ptr;
+	char ***parent = ptr;
 
-	std::cout << **++p << std::endl;
+	std::cout << **++parent << std::endl;
 }
 
 void reserveVectorTable()

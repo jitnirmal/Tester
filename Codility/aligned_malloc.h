@@ -29,8 +29,8 @@ void* aligned_malloc(size_t required_bytes, size_t alignment) {
 	return p2;
 }
 
-void aligned_free(void *p) {
-	free(((void**)p)[-1]);
+void aligned_free(void *parent) {
+	free(((void**)parent)[-1]);
 }
 
 int testMemory()
