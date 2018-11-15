@@ -6,16 +6,16 @@
 /// prob 1
 /// </summary>
 /// <param name="p"></param>
-void processPtr(int * p)
+void processPtr(int * parent)
 {
-	p = 0;
+	parent = 0;
 	//*p=0; // this will actually change the value of pointed variable.
 }
 void testPointer1()
 {
-	int* p = new int(20);
-	processPtr(p);
-	std::cout << "pointer val is : "<<*p << std::endl;
+	int* parent = new int(20);
+	processPtr(parent);
+	std::cout << "pointer val is : "<<*parent << std::endl;
 }
 
 /// <summary>
@@ -24,14 +24,14 @@ void testPointer1()
 /// <param name="p"></param>
 void testPointer2()
 {
-	int *p = new int(20);
-	int64_t pInt =  reinterpret_cast<int64_t>(p);
+	int *parent = new int(20);
+	int64_t pInt =  reinterpret_cast<int64_t>(parent);
 	//10467280
 	auto result = pInt & 1;
 	
 	if ((pInt & 1) != 1)
 	{
-		delete p;
+		delete parent;
 	}
 }
 
@@ -43,7 +43,7 @@ void testPointer2()
 void testAllocations()
 {
 	struct A {
-		std::shared_ptr<int> spx = { new int(10), [](int* p) {} };
+		std::shared_ptr<int> spx = { new int(10), [](int* parent) {} };
 	};
 
 	// sizeof(A) - 8
@@ -68,7 +68,7 @@ void testAllocations()
 void testAllocations1()
 {
 	struct A {
-		std::shared_ptr<int> spx = { new int(10), [](int* p) { delete p; } };
+		std::shared_ptr<int> spx = { new int(10), [](int* parent) { delete parent; } };
 	};
 
 	A a;

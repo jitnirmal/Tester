@@ -11,6 +11,7 @@
 #include "lambda.h"
 #include "function.h"
 #include "testCPP.h"
+#include "smart_pointer.h"
 //#include "vtable.h"
 int main()
 {
@@ -25,7 +26,8 @@ int main()
 //	TestContainer();
 //	TestLamdaFunction();
 //	TestFunction();
-	TestCPP();
+//	TestCPP();
+	testSmartPointer();
 //	TestVTable();
 	int i;
 	std::cin >> i;

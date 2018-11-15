@@ -163,13 +163,13 @@ void testLambda4() {
 
 // replace operator new and delete to log allocations
 void* operator new(std::size_t n) {
-	void* p = (void*)malloc(n);
-	cout << "Allocating " << n << " bytes, " << p << endl; 
-	return p;
+	void* parent = (void*)malloc(n);
+	cout << "Allocating " << n << " bytes, " << parent << endl; 
+	return parent;
 }
-void operator delete(void* p) throw() {
-	cout << "Deallocating " << p << endl;
-	free(p);
+void operator delete(void* parent) throw() {
+	cout << "Deallocating " << parent << endl;
+	free(parent);
 }
 
 void testFunction() {

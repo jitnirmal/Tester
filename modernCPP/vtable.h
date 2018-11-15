@@ -94,9 +94,9 @@ private:
 
 void TestStackRestrictedObjects() {
 	//UPNumber n; //error
-	UPNumber *p = new UPNumber;
+	UPNumber *parent = new UPNumber;
 	//delete p;  //error
-	p->destroy(); //fine
+	parent->destroy(); //fine
 }
 
 void TestVTable()

@@ -191,7 +191,7 @@ void TestContainer()
 
 
 	TestQ2<std::vector, int> t;
-	TestQ2<std::set, std::string> p;
+	TestQ2<std::set, std::string> parent;
 
 	TestQ2<std::map, std::string, std::string> m;
 }

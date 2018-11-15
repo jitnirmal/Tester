@@ -1,13 +1,6 @@
 #pragma once
 #include <iostream>
 #include <vector>
-#include <optional>
-
-std::optional<std::string> create(bool b) {
-	if (b)
-		return "Valid";
-	return {};
-}
 
 struct Object
 {

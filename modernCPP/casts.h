@@ -36,8 +36,8 @@ void testStaticCast()
 void testDynamicCast()
 {
 
-	auto getChild = [](Parent& p) {
-		Child& c = dynamic_cast<Child&>(p);
+	auto getChild = [](Parent& parent) {
+		Child& c = dynamic_cast<Child&>(parent);
 		return c;
 	};
 
