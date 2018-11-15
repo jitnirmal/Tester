@@ -147,8 +147,8 @@ struct C {};
 void testCast()
 {
 	int c = 10;       // 1 byte
-	int *p = (int*)&c; // 4 bytes
-	*p = 5;
+	int *parent = (int*)&c; // 4 bytes
+	*parent = 5;
 	//Since this results in a 4-byte pointer ( a pointer to 4-byte datatype) pointing to 1 byte of allocated memory, 
 	//writing to this pointer will either cause a run-time error or will overwrite some adjacent memory.
 //	int *p = static_cast<int*>(&c); // 4 bytes

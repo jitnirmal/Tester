@@ -16,9 +16,9 @@ struct tAllocator {
 		printf("allocate %zu\n", n);
 		return static_cast<T*>(::operator new(n * sizeof(T)));
 	}
-	void deallocate(T *p, size_t n) {
+	void deallocate(T *parent, size_t n) {
 		printf("deallocate %zu\n", n);
-		::operator delete(static_cast<void *>(p));
+		::operator delete(static_cast<void *>(parent));
 	}
 };
 void TestAllocatorEx() {

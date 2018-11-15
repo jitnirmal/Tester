@@ -9,6 +9,16 @@
 #include <unordered_set>
 #include <unordered_map>
 /// <summary>
+/// Amortized running time is used for analyzing a sequence of operations rather than a single one
+/// push_back() could be implemented in amortized constant time has helped me remember the simplified
+///  version of amortized constant time: It will run in O(1) in almost all cases, except a very few where it will perform worse.
+/// 
+///------------------------------------------------------------------------------------------------------------------------------------ -
+///       FAQ-1          STD::ARRAY
+/// -------------------------------------------------------------------------------------------------------------------------------------
+/// std::array is a container that encapsulates fixed size arrays.
+/// manages its elements by using the stack as opposed to the free store. 
+/// The size of the array is a template argument specified at compile time, which means that the size and type elements become a part of the concrete type
 /// -------------------------------------------------------------------------------------------------------------------------------------
 ///       FAQ-1          STD::VECTOR
 /// -------------------------------------------------------------------------------------------------------------------------------------
