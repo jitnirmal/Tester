@@ -9,6 +9,76 @@ using namespace std;
 #include <list>
 #include <algorithm>
 
+// -----------------------------------------------------------------------------------------------------------------------------------------------------
+//			BIG SORT ALGO
+// -----------------------------------------------------------------------------------------------------------------------------------------------------
+
+/// <summary>
+/// check is called twicely by sort
+/// </summary>
+bool check(const string& a, const string& b) {
+	return a.length() == b.length() ? a < b : a.length() < b.length();
+}
+
+void testBigSort() {
+	std::vector<std::string> v{	"6","31415926535897932384626433832795",	"1","3","10","3","5"};
+	std::sort(v.begin(), v.end(), check);
+
+	for (const auto& item : v){
+		std::cout << item << ", ";
+	}
+	std::cout << std::endl;
+}
+
+// -----------------------------------------------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------------------------------------------------------------------------
+/// <summary>
+/// divide without using division operator
+/// https://www.techiedelight.com/perform-division-two-numbers-without-using-division-operator/
+/// 
+
+int divide(int x, int y) {
+	int quotient = 0;
+	// loop till dividend x is more than the divisor y
+	while (x >= y)
+	{
+		x = x - y;		// perform reduction on dividend
+		quotient++;		// increase quotient by 1
+	}
+	int remainder = x;
+}
+// -----------------------------------------------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------------------------------------------------------------------------
+
+/// <summary>
+/// Mean and median
+/// </summary>
+/// 
+/// // Function for calculating mean 
+double findMean(int a[], int n)
+{
+	int sum = 0;
+	for (int i = 0; i < n; i++)
+		sum += a[i];
+	return (double)sum / (double)n;
+}
+
+// Function for calculating median 
+double findMedian(int a[], int n)
+{
+	// First we sort the array 
+	std::sort(a, a + n);
+
+	// check for even case 
+	if (n % 2 != 0)
+		return (double)a[n / 2];
+
+	return (double)(a[(n - 1) / 2] + a[n / 2]) / 2.0;
+}
+
+
+
+
 //A binary gap within a positive integer N is any maximal sequence of consecutive zeros 
 //that is surrounded by ones at both ends in the binary representation of N.
 

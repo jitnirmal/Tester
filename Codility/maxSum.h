@@ -30,3 +30,4 @@ void testSubArrayMaxSum()
 	std::cout << result << std::endl;
 }
 
+//XhBm6eo04qjl
