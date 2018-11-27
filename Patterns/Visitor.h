@@ -1,6 +1,11 @@
 #pragma once
 #include <vector>
 
+
+/// <summary>
+/// This pattern is useful when public APIs need to support plug-in operations. 
+/// Clients can then perform their intended operations on a class (with the visiting class) without modifying the source.
+/// </summary>
 class IVisitable;
 
 class IVisitor
@@ -19,7 +24,7 @@ public:
 	IVisitable();
 	virtual ~IVisitable();
 
-	void onVisitBy(IVisitor& visitor)
+	void accept(IVisitor& visitor)
 	{
 		visitor.visit(*this);
 	}
@@ -40,7 +45,7 @@ class RVDeserializer : IVisitor
 	void publishToGUI()
 	{
 		OrderMsg msg;
-		msg.onVisitBy(*this);
+		msg.accept(*this);
 	}
 
 	virtual void visit(IVisitable& visitable)

@@ -1,6 +1,7 @@
 #include <iostream>
 #include "Factory.h"
 #include "Visitor.h"
+#include "Observer.h"
 
 
 
@@ -19,13 +20,5 @@ void TestFactory()
 
 int main(int argc, char *argv[])
 {
-	auto func = [](int x)
-	{
-		std::cout << "Value is " << x << std::endl;
-	};
-
-	std::cout<<"testing Patterns "<<std::endl;
-	//TestFactory();
-
-	testFP(func);
+	testObserver();
 }

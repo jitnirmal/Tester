@@ -1,5 +1,5 @@
 #pragma once
-
+#include <set>
 
 template<class TEvent> 
 class Observer
@@ -8,7 +8,7 @@ public:
 	Observer() {};
 	virtual ~Observer() {};
 
-	virtual void onEvent(TEvent&) = 0;
+	virtual void onEvent(const TEvent&) = 0;
 
 };
 
@@ -30,8 +30,8 @@ public:
 protected:
 	using Observers = std::set<Observer<TEvent>*>;
 
-	void notifyAllObservers(TEvent& evt) const {
-		for (const auto& observer : _observers)
+	void notifyAllObservers(const TEvent& evt) const {
+		for (auto& observer : _observers)
 		{
 			observer->onEvent(evt);
 		}
@@ -42,15 +42,57 @@ protected:
 	}
 	Observers _observers;
 };
-class MarketData
+
+struct MarketData
 {
-
+	MarketData(int bid, int ask) :
+		Bid(bid),
+		Ask(ask) {}
+	int Bid;
+	int Ask;
 };
-class MarketBook : public Observer<MarketData> {
-	virtual void onEvent(MarketData& mdata) {
 
+class MarketBook : public Observable<MarketData> {
+public:
+	void OnUpdate(const MarketData& data)
+	{
+		notifyAllObservers(data);
 	}
 };
 
 
+class TradingStrategy : public Observer<MarketData>
+{
+public:
+	void onEvent(const MarketData& event) override {
+		std::cout << "TradingStrategy got the event : Bid = " << event.Bid << " , Ask= " << event.Ask << std::endl;
+	}
+};
+
+class TradeBook : public Observer<MarketData>
+{
+public:
+	void onEvent(const MarketData& event) override {
+		std::cout << "TradeBook got the event : Bid = " << event.Bid << " , Ask= " << event.Ask << std::endl;
+	}
+};
+
+class Client {
+public:
+	Client() {
+		marketbook.addObserver(*(new TradingStrategy()));
+		marketbook.addObserver(*(new TradeBook()));
+	}
+	void process(){
+		MarketData data(300,400);
+		marketbook.OnUpdate(data);
+	}
+	MarketBook marketbook;
+};
+
+void testObserver()
+{
+	Client client;
+	client.process();
+}
 
