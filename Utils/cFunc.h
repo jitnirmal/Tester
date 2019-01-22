@@ -55,9 +55,9 @@ int MTest::_x{ 0 };
 void constOps()
 {
 
-	const int* p = getPointer();
+	const int* parent = getPointer();
 	//*p = 20;
-	p = new int(20);
+	parent = new int(20);
 
 	MTest mtest;
 	const int* val = mtest.get();
