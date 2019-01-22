@@ -13,6 +13,7 @@ using namespace std;
 ///			-- empty lambda [](){}();
 ///			-- std::sort(v.begin(), v.end(), [](int a, int b) { return a > b; });
 ///			-- [&] means ‘capture by-reference', [=] means ‘capture by-value' 
+///			-- a very convenient shorthand notation to introduce functors
 ///	Similarities between a Lambda and a class
 ///			--- The class only consists of one member function.
 ///			--- The capture block is a combination of the class's member variables and its constructor.

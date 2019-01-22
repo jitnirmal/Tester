@@ -1,7 +1,7 @@
 /// <summary>
 /// https://herbsutter.com/2013/05/29/gotw-89-solution-smart-pointers/
 /// 
-/// 
+/// http://asm.sourceforge.net/articles/startup.html
 /// https://herbsutter.com/welcome-to-the-jungle/
 /// a. Unified : Every pointer (or object reference) can address every byte, and every byte is equally “far away” from the core.
 ///					-- locality

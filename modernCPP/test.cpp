@@ -24,10 +24,10 @@ int main()
 //	TestMetaprogramming();
 //	TestTraits();
 //	TestContainer();
-//	TestLamdaFunction();
+	TestLamdaFunction();
 //	TestFunction();
 //	TestCPP();
-	testSmartPointer();
+//	testSmartPointer();
 //	TestVTable();
 	int i;
 	std::cin >> i;

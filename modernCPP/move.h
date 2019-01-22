@@ -1,4 +1,4 @@
-#pragma once  
+﻿#pragma once  
 #include <utility> // std::move<T>
 #include <iostream>  
 #include <algorithm>  
@@ -30,7 +30,7 @@
 ///					c.push_back(std::move(b)); // move
 /// Because std::move does nothing but cast its argument to an rvalue, better name for it might have been rvalue_cast
 /// 12. Move requests on const objects are silently transformed into copy operations
-///    * std::move not only doesn�t actually move anything, also it doesn�t even guarantee that the object it�s casting will be eligible to be moved.
+///    * std::move not only doesn’t actually move anything, also it doesn’t even guarantee that the object it’s casting will be eligible to be moved.
 /// After an object is moved, it must remain in a valid state  but no specific requirement regarding the state 
 /// (usually default 0, nullptr, false)
 /// 13. Do not forget to mark your move-constructors and move-assignment operators as noexcept (unless they might throw an exception, of course). 
@@ -46,6 +46,66 @@
 ///		argument is bound to an rvalue
 ///  3. From pure technical prospect , std::forward can replace std::move, however it compromise clarity, extra typing for standard forward
 /// 
+/// <summary>
+/// If the expression initializing a universal reference is an lvalue, the universal reference becomes an lvalue reference.
+/// If the expression initializing the universal reference is an rvalue, the universal reference becomes an rvalue reference.
+/// If you can take the address of an expression, the expression is an lvalue
+/// 
+/// Widget&& var1 = someWidget; 
+/// You can take the address of var1, so var1 is an lvalue. 
+/// auto&& var2 = var1;
+/// var2’s type declaration of auto&& makes it a universal reference, and because it’s being initialized with var1 (an lvalue), var2 becomes an lvalue reference. 
+/// 
+///  It’s as if var2 were declared like this:
+///  Widget& var2 = var1;
+/// 
+/// example 2 ::
+/// std::vector<int> v;
+/// auto&& val = v[0];               // val becomes an lvalue reference (see below)
+/// val is a universal reference, and it’s being initialized with v[0], i.e., with the result of a call to std::vector<int>::operator[]. 
+/// 
+/// template<typename T>
+/// void f(T&& param);               // “&&” might mean rvalue reference
+/// f(10);                           // 10 is an rvalue
+/// 
+/// int x = 10;
+/// f(x);                            // x is an lvalue
+/// 
+/// template<typename T>
+/// void f(std::vector<T>&& param);     // “&&” means rvalue reference
+/// 
+/// template<typename T>
+/// void f(T&& param);               // deduced parameter type ⇒ type deduction;
+///									 // && ≡ universal reference
+/// 
+/// template<typename T>
+/// class Widget {
+/// 		Widget(Widget&& rhs);        // fully specified parameter type ⇒ no type deduction;
+///      };                // && ≡ rvalue reference
+/// 
+/// template<typename T1>
+/// class Gadget {
+/// 	template<typename T2>
+/// Gadget(T2&& rhs);            // deduced parameter type ⇒ type deduction;
+///	};					&& ≡ universal reference	
+/// 
+/// void f(Widget&& param);          // fully specified parameter type ⇒ no type deduction;
+/// 							 // && ≡ rvalue reference
+/// 
+/// Even the simple addition of a const qualifier is enough to disable the interpretation of “&&” as a universal reference:
+/// template<typename T>
+/// void f(const T&& param);               // “&&” means rvalue referencetemplate<typename T>
+/// 
+/// 
+/// Widget makeWidget();                       // factory function for Widget
+/// Widget&& var1 = makeWidget()               // var1 is an lvalue, but
+///											   its type is rvalue reference (to Widget)
+/// 
+/// Widget var2 = static_cast<Widget&&>(var1); // the cast expression yields an rvalue, but
+///													its type is rvalue reference  (to Widget)
+/// 
+/// /// </summary>
+
 
 /// -------------------------------------------------------------------------------------------------------------------------------------
 ///       FAQ-2          UNIVERSAL REFERENCE 
@@ -59,9 +119,9 @@
 ///			template<typename T> void f(std::vector<T>&& param); // rvalue reference
 ///			template<typename T> void f(T&& param); // not rvalue reference (universal reference)
 /// 
-///  2. If the form of the type declaration isn�t precisely type&&, or if type deduction does not occur, type&& denotes an rvalue reference.
-///  3. Universal references correspond to rvalue references if they�re initialized with rvalues.They correspond to lvalue references 
-///			if they�re initialized with lvalues.
+///  2. If the form of the type declaration isn’t precisely type&&, or if type deduction does not occur, type&& denotes an rvalue reference.
+///  3. Universal references correspond to rvalue references if they’re initialized with rvalues.They correspond to lvalue references 
+///			if they’re initialized with lvalues.
 ///  4. Use std::move on rvalue references, std::forward on universal references
 /// 5.  Never apply std::move or std::forward to local objects if they would otherwise be eligible for the return value optimization.
 
@@ -115,6 +175,52 @@ void TestMove() {
 	Clazz anotherObject2(std::move(anObject)); // Calls move constructor
 	anObject = anotherObject1; // Calls copy assignment operator
 	anotherObject2 = std::move(anObject); // Calls move assignment operator
+}
+
+void TestMove2() {
+	Clazz Object1;
+
+	// just rvalue reference.. no constructor call for all 3 following cases
+	Clazz&& Object2 = std::move(Object1);
+	Clazz&& Object3 = static_cast<Clazz&&>(Object1);
+	auto&& Object4 = Object1; // Clazz&
+	auto&& Object5 = Clazz(); // Clazz&&
+	auto&& Object6 = std::move(Object1); // Clazz&&
+
+										 // move constructor
+	Clazz Object7 = std::move(Object4);
+
+
+	// const + move constructor
+	Clazz Object8 = Clazz();
+
+	int var1 = 10;
+	auto&& var2 = var1;
+}
+
+
+void overloaded(int const &arg) { std::cout << "by lvalue\n"; }
+void overloaded(int && arg) { std::cout << "by rvalue\n"; }
+
+template< typename t >
+/* "t &&" with "t" being template param is special, and  adjusts "t" to be
+(for example) "int &" or non-ref "int" so std::forward knows what to do. */
+void forwarding(t && arg) {
+	std::cout << "via std::forward: ";
+	overloaded(std::forward< t >(arg));
+	std::cout << "via std::move: ";
+	overloaded(std::move(arg)); // conceptually this would invalidate arg
+	std::cout << "by simple passing: ";
+	overloaded(arg);
+}
+
+int testForward() {
+	std::cout << "initial caller passes rvalue:\n";
+	forwarding(5);
+	std::cout << "initial caller passes lvalue:\n";
+	int x = 5;
+	forwarding(x);
+	return 0;
 }
 
 /// <summary>
@@ -204,10 +310,10 @@ public:
 			delete[] _data;
 			_length = other._length;
 			_data = new int[_length];
-			std::copy(other._data, other._data + _length, _data);
-		}
-		return *this;
-	}
+			 
+
+
+
 
 	/// <summary>
 	/// constructor takes an rvalue reference to the class type

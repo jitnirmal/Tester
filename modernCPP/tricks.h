@@ -2,7 +2,7 @@
 #include <cstddef>
 #include <typeinfo>
 #include <iostream>
-
+//https://github.com/rigtorp/awesome-modern-cpp
 /// /// <summary>
 /// //how to print something before main starts...
 /// </summary>
@@ -46,8 +46,45 @@ void checkIfObjectsBelongsToSameClass(T1 a, T2 b)
 	}
 }
 
+//--------------------------------------------------------------------------------------------
+//				Write data in columns
+//--------------------------------------------------------------------------------------------
+#include <iomanip>
+int WriteDataInColumns(){
+	std::cout << std::left << std::setw(12) << "John Smith" 
+		<< std::right << std::setw(3) << 23
+		<< '\n';
+	std::cout << std::left << std::setw(12) << "Sam Brown"
+		<< std::right << std::setw(3) << 8
+		<< '\n';
+}
+
+//--------------------------------------------------------------------------------------------
+//				Function template SFINAE (Substitution Failure Is Not An Error )
+//--------------------------------------------------------------------------------------------
+#include <type_traits>
+#include <limits>
+#include <cmath>
+
+template <typename T>
+typename std::enable_if<std::is_integral<T>::value, bool>::type
+equal(T lhs, T rhs)
+{
+	return lhs == rhs;
+}
+template <typename T>
+typename std::enable_if<std::is_floating_point<T>::value, bool>::type
+equal(T lhs, T rhs)
+{
+	return std::abs(lhs - rhs) < 0.0001;
+}
+
+
 void testTricks()
 {
+	WriteDataInColumns();
 	checkIfObjectsBelongsToSameClass(S(),S());
 	checkIfObjectsBelongsToSameClass(S(), P());
 }
+
+
