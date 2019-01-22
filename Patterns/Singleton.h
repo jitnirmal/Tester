@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <mutex>
+#include <atomic>
 //https://www.boost.org/doc/libs/1_54_0/doc/html/atomic/usage_examples.html
 template <class T>
 class SingletonBase
@@ -50,6 +51,28 @@ class CallOnceSingleton{
 		  instance = new CallOnceSingleton();
 	  }
 };
+
+class X {
+public:
+	static X * instance()
+	{
+		X * tmp = _instance.load(std::memory_order_consume);
+		if (!tmp) {
+			std::lock_guard<std::mutex> guard(_mutex);
+			tmp = _instance.load(std::memory_order_consume);
+			if (!tmp) {
+				tmp = new X;
+				_instance.store(tmp, std::memory_order_release);
+			}
+		}
+		return tmp;
+	}
+private:
+	static std::atomic<X*> _instance;
+	static std::mutex _mutex;
+};
+
+
 
 CallOnceSingleton* CallOnceSingleton::instance = nullptr;
 std::once_flag CallOnceSingleton::initInstanceFlag;
