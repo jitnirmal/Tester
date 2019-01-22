@@ -9,6 +9,88 @@ using namespace std;
 #include <list>
 #include <algorithm>
 
+#define HTONS(n) (((((unsigned short)(n) & 0xFF)) << 8) | (((unsigned short)(n) & 0xFF00) >> 8))
+#define NTOHS(n) (((((unsigned short)(n) & 0xFF)) << 8) | (((unsigned short)(n) & 0xFF00) >> 8))
+
+#define HTONL(n) (((((unsigned long)(n) & 0xFF)) << 24) | \
+                  ((((unsigned long)(n) & 0xFF00)) << 8) | \
+                  ((((unsigned long)(n) & 0xFF0000)) >> 8) | \
+                  ((((unsigned long)(n) & 0xFF000000)) >> 24))
+
+#define NTOHL(n) (((((unsigned long)(n) & 0xFF)) << 24) | \
+                  ((((unsigned long)(n) & 0xFF00)) << 8) | \
+                  ((((unsigned long)(n) & 0xFF0000)) >> 8) | \
+                  ((((unsigned long)(n) & 0xFF000000)) >> 24))
+
+void TestBitManipulation()
+{
+	//Testing bits : The following code tests to see whether bit 3 is set in the timer status register using the & operator:
+	int x = 01;
+	if (x & 0x08){}
+
+	//Setting bits : To set bit 4, the | operator is used as shown in the following code :
+	x |= 0x10;
+
+	// clearning bits : uses the & and ~ operators as follows:
+	x &= ~(0x04);
+
+	//Shifting bits
+	// use unsigned intergers, most significant bit to be repeated when the variable is signed.
+	unsigned int bitCount = 200;
+
+	// right shift by 1
+	bitCount >>= 1;
+
+	// left shift by 3
+	bitCount <<= 3;
+
+
+	struct
+	{
+		uint8_t  bit0 : 1;
+		uint8_t  bit1 : 1;
+		uint8_t  bit2 : 1;
+		uint8_t  bit3 : 1;
+		uint8_t  nibble : 4;
+	} foo;
+
+	//Bits within a bitfield can be individually set, tested, cleared, and toggled without affecting the state of the other bits outside the bitfield.
+	if (foo.bit0)
+	{
+		/* Do other stuff. */
+	}
+	if (foo.nibble == 0x03)
+	{
+		/* Do other stuff. */
+	}
+
+	//To set a bit using a bitfield, use this code:
+	foo.bit1 = 1;
+	foo.nibble = 0xC;
+	foo.bit3 = ~foo.bit3;
+
+}
+
+
+// -----------------------------------------------------------------------------------------------------------------------------------------------------
+//			LITTLE BIG INDIAN
+// -----------------------------------------------------------------------------------------------------------------------------------------------------
+
+int is_big_endian(void)
+{
+	union {
+		uint32_t i;
+		char c[4];
+	} e = { 0x01000000 };
+
+	return e.c[0];
+}
+
+
+
+
+
+
 // -----------------------------------------------------------------------------------------------------------------------------------------------------
 //			BIG SORT ALGO
 // -----------------------------------------------------------------------------------------------------------------------------------------------------

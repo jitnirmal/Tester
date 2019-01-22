@@ -111,35 +111,45 @@ void TestMorseCode() {
 	}
 }
 
+auto printCodes = [](const std::list<std::string>& concatedCodes)
+{
+	for (const auto& item : concatedCodes) {
+		std::cout << item << ",";
+	}
+	std::cout << std::endl;
+};
 class MorseCodeDecoder3 {
 private:
 
-	std::string decode(std::string& concatedCodes) {
+	std::string decode(std::list<std::string>& concatedCodes) {
 		std::string decodeStr;
-		std::string codeStr;
-		std::stringstream ss(concatedCodes);
 
-		while (std::getline(ss, codeStr, SEPERATOR)) {
-			decodeStr += _morseDecryptCode.at(codeStr);
+		for (const auto& item : concatedCodes) {
+			decodeStr += _morseDecryptCode.at(item);
 		}
 
 		return decodeStr;
 	}
 
-	void processCodeforTextRecursive(const std::string morseCode, std::string concatedCodes)
+	void processCodeforTextRecursive(const std::string morseCode, const std::list<std::string>& concatedCodes)
 	{
+
+
 		for (int i = 1; i <= morseCode.size(); i++) {
+
+			std::list<std::string> localCodes(concatedCodes);
 			std::string subCode = morseCode.substr(0, i);
 			if (_morseDecryptCode.find(subCode) != _morseDecryptCode.end()) {
-				// all the valid codes are concatenated 
+				localCodes.push_back(subCode);
+				//	printCodes(localCodes);
+
 				if (i == morseCode.size()) {
-					concatedCodes += subCode + SEPERATOR;
-					_textCodeTable.push_back(decode(concatedCodes));
+					_textCodeTable.push_back(decode(localCodes));
+					std::cout << "--------------------" << std::endl;
 				}
 				else {
 					//std::cout << "recurse >> " << data << std::endl;
-					processCodeforTextRecursive(morseCode.substr(i, morseCode.size() - i),
-						(concatedCodes + subCode + SEPERATOR));
+					processCodeforTextRecursive(morseCode.substr(i, morseCode.size() - i), localCodes);
 				}
 			}
 		}
@@ -149,7 +159,7 @@ private:
 public:
 	std::vector<std::string> getTextForMorseCode(const std::string& code)
 	{
-		std::string emptySubCodes;
+		std::list<std::string> emptySubCodes;
 		_textCodeTable.clear();
 		processCodeforTextRecursive(code, emptySubCodes);
 		//processCodeforTextIterative(code);
@@ -167,7 +177,7 @@ private:
 };
 
 vector<string> decode_all_words3(string code) {
-	MorseCodeDecoder3 decoder;
+	MorseCodeDecoder decoder;
 	return decoder.getTextForMorseCode(code);
 }
 

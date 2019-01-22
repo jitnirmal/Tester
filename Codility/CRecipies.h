@@ -27,21 +27,17 @@ void tcopy(char to[], const char from[])
 	}
 }
 
-char* rtrim(char* str, char replaceChar=' ')
-{
+char* rtrim(char* str, char replaceChar=' '){
 	char* end = str + strlen(str);
-
 	while (*(--end) == replaceChar)
 	{
 		*end = '\0';
 	}
 	return str;
-	
 }
 
 void ltrim(char *src){
 	char *dst =src;
-
 	while (*src == ' '){
 		++src;
 	}
