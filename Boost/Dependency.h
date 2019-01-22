@@ -70,7 +70,8 @@ void ParallelCompilation(const Graph& g, std::list<Vertex>& orderedMakeFiles)
 		}
 	}
 	
-	graph_traits<Graph>::vertex_iterator i, iend;
+	graph_traits<Graph>::vertex_iterator i, iend;
+
 	std::cout << "parallel make ordering, " << std::endl
 		<< "  vertices with same group number" << std::endl
 		<< "  can be made in parallel" << std::endl << std::endl;
