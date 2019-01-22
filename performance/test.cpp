@@ -33,9 +33,9 @@ void testUnique()
 void constCorrectness()
 {
 	// both data and pointer can be changed
-	int* p = new int(10);
-	*p = 30;
-	p = new int(20);
+	int* parent = new int(10);
+	*parent = 30;
+	parent = new int(20);
 
 	// data ins const and pointer can be changed
 	const int* p1 = new int(10);

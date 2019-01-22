@@ -1,6 +1,4 @@
-set(performance_SRCS
-    test.cpp
-)
+file(GLOB performance_SRCS *.cpp *.h)
 
 add_executable(performance_test
     ${performance_SRCS}
