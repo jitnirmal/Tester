@@ -3,8 +3,11 @@
 #include <iostream>
 #include <array>
 #include <algorithm>
+#include <list>
+#include <deque>
 #include <functional>
 #include <vector>
+#include "perf.h"
 using namespace std;
 /// <summary>
 /// Quick sort divides the input array into two partitions, which are the left partition and the right partition.
@@ -102,4 +105,72 @@ void quickSort(int arr[], int low, int high) {
 	if (high > i)
 		quickSort(arr, i, high);
 }
+//***********************************Tests*****************************//
+template <typename Time = std::chrono::nanoseconds>
+uint64_t T_QSort() {
+	auto data = getData(MAX_SIZE);
+	std::vector<Time> Timer(ITERATIONs);
+	for (size_t i = 0; i < ITERATIONs; ++i) {
+		auto vdata = data;
+		auto start = Clock::now();
+		QuickSort(vdata.data(), 0, vdata.size() - 1);
+		auto time = std::chrono::duration_cast<Time>(Clock::now() - start);
+		Timer[i] = time;
+	}
+	return average<Time>(Timer);
+}
 
+template <typename Time = std::chrono::nanoseconds>
+uint64_t T_STD_Sort() {
+	auto data = getData(MAX_SIZE);
+	std::vector<Time> Timer(ITERATIONs);
+	for (size_t i = 0; i < ITERATIONs; ++i) {
+		auto vdata = data;
+		auto start = Clock::now();
+		std::sort(vdata.begin(), vdata.end());
+		auto time = std::chrono::duration_cast<Time>(Clock::now() - start);
+		Timer[i] = time;
+	}
+	return average<Time>(Timer);
+}
+
+//to sort a list we should use list::sort, std::sort requires random-access iterators 
+// (supporting jumps of arbitrary size)whereas list iterators can only go forwards or 
+// backwards by one link at a time.
+template <typename Time = std::chrono::nanoseconds>
+uint64_t T_STD_deque_Sort() {
+	auto data = getData(MAX_SIZE);
+	
+	std::vector<Time> Timer(ITERATIONs);
+	for (size_t i = 0; i < ITERATIONs; ++i) {
+		std::deque<int> dq(data.begin(), data.end());
+		auto start = Clock::now();
+		std::sort(dt.begin(), dq.end());
+		auto time = std::chrono::duration_cast<Time>(Clock::now() - start);
+		Timer[i] = time;
+	}
+	return average<Time>(Timer);
+}
+
+template <typename Time = std::chrono::nanoseconds>
+uint64_t T_STD_list_Sort() {
+	auto data = getData(MAX_SIZE);
+
+	std::vector<Time> Timer(ITERATIONs);
+	for (size_t i = 0; i < ITERATIONs; ++i) {
+		std::list<int> lt(data.begin(), data.end());
+		auto start = Clock::now();
+		lt.sort();
+		auto time = std::chrono::duration_cast<Time>(Clock::now() - start);
+		Timer[i] = time;
+	}
+	return average<Time>(Timer);
+}
+
+void TestQSortPerformance() {
+	std::cout << " ------------------------------------------------------------------" << std::endl;
+	std::cout << " T_QSort                         : " << T_QSort<std::chrono::milliseconds>() << " milli"<<std::endl;
+	std::cout << " T_STD_vector_Sort               : " << T_STD_Sort<std::chrono::milliseconds>()<< " milli"<< std::endl;
+	std::cout << " T_STD_list_Sort                 : " << T_STD_list_Sort<std::chrono::milliseconds>() << " milli" << std::endl;
+	std::cout << " T_STD_deque_Sort                : " << T_STD_list_Sort<std::chrono::milliseconds>() << " milli" << std::endl;
+}

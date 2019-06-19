@@ -1,10 +1,14 @@
 #pragma once
-
 #include <iostream>
+#include <boost/heap/priority_queue.hpp>
+#include <boost/heap/fibonacci_heap.hpp>
+#include <boost/heap/binomial_heap.hpp>
 #include <array>
-#include <algorithm>
-#include <functional>
+#include <queue>
 #include <vector>
+#include "perf.h"
+
+
 //http://interactivepython.org/courselib/static/pythonds/Trees/BinaryHeapImplementation.html
 using namespace std;
 
@@ -140,4 +144,101 @@ void TestBinaryHeap() {
 	cout << "ExtractMax() = " << priorityQueue.ExtractMax() << endl;
 	cout << "GetMax() = " << priorityQueue.GetMax() << endl;
 	priorityQueue.print();
+}
+
+template <typename Time = std::chrono::nanoseconds>
+uint64_t T_HeapInsertion() {
+	auto data = getData(MAX_SIZE);
+	std::vector<Time> Timer(ITERATIONs);
+	bool dataflag = false;
+	for (size_t i = 0; i < ITERATIONs; ++i) {
+
+		auto start = Clock::now();
+		BinaryHeap bh(data);
+		auto time = std::chrono::duration_cast<Time>(Clock::now() - start);
+		Timer[i] = time;
+	}
+	return average<Time>(Timer);
+}
+template <typename Time = std::chrono::nanoseconds>
+uint64_t T_HeapExtraction() {
+	auto data = getData(MAX_SIZE);
+	std::vector<Time> Timer(ITERATIONs);
+	bool dataflag = false;
+	for (size_t i = 0; i < ITERATIONs; ++i) {
+
+		BinaryHeap bh(data);
+		auto start = Clock::now();
+		while (!bh.IsEmpty())
+		{
+			bh.ExtractMax();
+		}
+		auto time = std::chrono::duration_cast<Time>(Clock::now() - start);
+		Timer[i] = time;
+	}
+	return average<Time>(Timer);
+}
+
+template <typename Time = std::chrono::nanoseconds>
+uint64_t T_STD_HeapInsertion() {
+	auto data = getData(MAX_SIZE);
+	std::vector<Time> Timer(ITERATIONs);
+	for (size_t i = 0; i < ITERATIONs; ++i) {
+		auto start = Clock::now();
+		std::priority_queue<int> pq(data.begin(), data.end());
+		auto time = std::chrono::duration_cast<Time>(Clock::now() - start);
+		Timer[i] = time;
+	}
+	return average<Time>(Timer);
+}
+
+template <typename Time = std::chrono::nanoseconds>
+uint64_t T_STD_HeapExtraction() {
+	auto data = getData(MAX_SIZE);
+	std::vector<Time> Timer(ITERATIONs);
+	bool dataflag = false;
+	for (size_t i = 0; i < ITERATIONs; ++i) {
+
+		std::priority_queue<int> pq(data.begin(), data.end());
+		auto start = Clock::now();
+		while (!pq.empty())
+		{
+			pq.pop();
+		}
+		auto time = std::chrono::duration_cast<Time>(Clock::now() - start);
+		Timer[i] = time;
+	}
+	return average<Time>(Timer);
+}
+
+template <typename Time = std::chrono::nanoseconds>
+uint64_t T_Boost_HeapExtraction() {
+	auto data = getData(MAX_SIZE);
+	std::vector<Time> Timer(ITERATIONs);
+	bool dataflag = false;
+	for (size_t i = 0; i < ITERATIONs; ++i) {
+
+		boost::heap::binomial_heap<int> pq;
+		for (const auto& item : data) {
+			pq.emplace(item);
+		}
+		
+		auto start = Clock::now();
+		while (!pq.empty())
+		{
+			pq.pop();
+		}
+		auto time = std::chrono::duration_cast<Time>(Clock::now() - start);
+		Timer[i] = time;
+	}
+	return average<Time>(Timer);
+}
+
+void TestHeapPerformance() {
+	std::cout << " ------------------------------------------------------------------" << std::endl;
+	std::cout << " T_HeapInsertion                 : " << T_HeapInsertion<std::chrono::milliseconds>() <<  " milli" << std::endl;
+	std::cout << " T_STD_HeapInsertion             : " << T_HeapInsertion<std::chrono::milliseconds>() << " milli" << std::endl;
+	std::cout << " T_HeapExtraction                : " << T_HeapExtraction<std::chrono::milliseconds>() << " milli" << std::endl;
+	std::cout << " T_STD_HeapExtraction            : " << T_STD_HeapExtraction<std::chrono::milliseconds>() << " milli" << std::endl;
+	//std::cout << " T_Boost_HeapExtraction          : " << T_Boost_HeapExtraction<std::chrono::milliseconds>() << " milli" << std::endl;
 }

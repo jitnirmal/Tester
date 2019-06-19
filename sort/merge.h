@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <functional>
 #include <vector>
+#include "perf.h"
 using namespace std;
 
 /// <summary>
@@ -89,3 +90,26 @@ void TestMergeSort() {
 	MergeSort(arr.data(), 0, arr.size() - 1);
 	print();
 }
+
+
+
+template <typename Time = std::chrono::nanoseconds>
+uint64_t T_MergeSort() {
+	auto data = getData(MAX_SIZE);
+	std::vector<Time> Timer(ITERATIONs);
+	for (size_t i = 0; i < ITERATIONs; ++i) {
+		auto vdata = data;
+		auto start = Clock::now();
+		MergeSort(vdata.data(), 0, vdata.size() - 1);
+		auto time = std::chrono::duration_cast<Time>(Clock::now() - start);
+		Timer[i] = time;
+	}
+	return average<Time>(Timer);
+}
+
+void TestMergeSortPerformance() {
+	std::cout << " ------------------------------------------------------------------" << std::endl;
+	std::cout << " T_MergeSort                     : " << T_MergeSort<std::chrono::milliseconds>() << " milli" << std::endl;
+
+}
+
