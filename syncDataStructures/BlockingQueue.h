@@ -4,10 +4,11 @@
 #include <condition_variable>
 
 
-template<typename Data>
+template<typename Data,
+	class Container = std::queue<T>>
 class BlockingQueue {
 private:
-	std::queue<Data>            _queue;
+	Container		            _queue;
 	std::mutex					_mutex;
 	const size_t                _limit;
 
@@ -16,6 +17,10 @@ private:
 	using queue_lock = std::unique_lock<std::mutex>;
 
 public:
+
+	using value_type      = typename Container::value_type;
+	static_assert(is_same_v<T, value_type>, "container adaptors require consistent types");
+
 	BlockingQueue(size_t size_limit = 10) 
 		: _limit(size_limit)
 	{}
