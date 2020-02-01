@@ -20,6 +20,8 @@ public:
 		: _limit(size_limit)
 	{}
 
+	~BlockingQueue() = default;
+
 	void push(const Data& data)
 	{
 		queue_lock lock(_mutex);
@@ -32,13 +34,16 @@ public:
 			_signalItemAdded.notify_one();
 		}
 	}
-	void push(const Data&& data)
+
+	//efficient, call as BQ.push(any args for class)
+	template<typename ...args>
+	void push(args&& ...arg)
 	{
 		queue_lock lock(_mutex);
 		while (_queue.size() >= _limit) {
 			_signalItemRemoved.wait(lock);
 		}
-		_queue.push(std::move(data));
+		_queue.emplace(arg..);
 		if (_queue.size() == 1)
 		{
 			_signalItemAdded.notify_one();
@@ -58,6 +63,23 @@ public:
 			_signalItemRemoved.notify_one();
 		}
 		return true;
+	}
+
+	//efficient, rval ref (no copy) if called as auto&& val = BQ.pop()
+	Data&& pop()
+	{
+		queue_lock lock(_mutex);
+		while (_queue.size() == 0) {
+			_signalItemAdded.wait(lock);
+		}
+		
+		auto&& popped_value = std::move(_queue.front());
+		_queue.pop();
+
+		if (_queue.size() == (size_limit - 1)) {
+			_signalItemRemoved.notify_one();
+		}
+		return std::move(popped_value);
 	}
 
 	bool try_push(const Data& data)
