@@ -1,8 +1,8 @@
 ﻿#pragma once
-#include<vector>
-#include<list>
-#include<algorithm>
-#include<cassert>
+#include <vector>
+#include <iostream>
+#include <list>
+#include <stack>
 
 /// <summary> 
 ///   graph G = (V, E) consists of a set of vertices, V, and a set of edges E
@@ -12,51 +12,93 @@
 /// 
 
 
-// A simple representation of graph using STL 
-#include <vector>
-#include <iostream>
-
-template<size_t SIZE>
-class AdjacencyGraph {
-private:
-	std::vector<int> adj[SIZE];
+class graph
+{
 public:
-	explicit Graph() {
-	}
-	void addEdge(int u, int v)
+	graph(const int numOfVertices) : mNumOfVertices(numOfVertices)
 	{
-		adj[u].push_back(v);
-		adj[v].push_back(u);
-	}
-	void print()
-	{
-		for (int v = 0; v < SIZE; ++v)
+		for (int i = 0; i < mNumOfVertices; ++i)
 		{
-			std::cout << "\n Adjacency list of vertex " << v << "\n head ";
-			for (auto x : adj[v])
-				std::cout << "-> " << x;
-			std::cout << std::endl;
+			mAdjList.push_back(std::vector<int>());
 		}
 	}
 
+	graph(std::initializer_list<std::pair<int, int>> vertices) : mNumOfVertices(vertices.size())
+	{
+		for (int i = 0; i < mNumOfVertices; ++i)
+		{
+			mAdjList.push_back(std::vector<int>());
+		}
+		for (const auto& item : vertices)
+		{
+			insert_edge(item.first, item.second);
+		}
+	}
+
+	void insert_edge(int u, int v)
+	{
+		mAdjList[u].push_back(v);
+	}
+
+	void DFSRecursive(int v)
+	{
+		std::cout << "DFS : (" << v << ")";
+		std::vector<bool> isVisited(mNumOfVertices, false);
+		DFSRecursive(v, isVisited);
+		std::cout << std::endl;
+	}
+
+	void BFSIterative(int v)
+	{
+		std::vector<bool> isVisited(mNumOfVertices, false);
+		std::list<int> queue;
+		queue.push_back(v);
+		std::cout << "BFS : (" << v << ")";
+		while (!queue.empty())
+		{
+			int qi = queue.front();
+			queue.pop_front();
+
+			isVisited[qi] = true;
+			std::cout << qi << " ";
+			for (const auto& item : mAdjList[qi])
+			{
+				if (!isVisited[item])
+				{
+					queue.push_back(item);
+				}
+			}
+		}
+		std::cout << std::endl;
+	}
+
+private:
+	void DFSRecursive(int v, std::vector<bool>& isVisited)
+	{
+		isVisited[v] = true;
+		std::cout << v << " ";
+		for (const auto& item : mAdjList[v])
+		{
+			if (!isVisited[item])
+			{
+				DFSRecursive(item, isVisited);
+			}
+		}
+	}
+
+
+	std::vector<std::vector<int>> mAdjList;
+	const int mNumOfVertices;
 };
 
-
-int TestAdjacencylist()
+void testGraph()
 {
-	AdjacencyGraph<5> ag;
-	ag.addEdge(0, 1);
-	ag.addEdge(0, 4);
-	ag.addEdge(1, 2);
-	ag.addEdge(1, 3);
-	ag.addEdge(1, 4);
-	ag.addEdge(2, 3);
-	ag.addEdge(3, 4);
-	ag.print();
-	return 0;
+	graph g{ { 5,2 }, {5,0}, { 4,0 }, {4,1}, { 2,3 }, {3,1} };
+	g.BFSIterative(5);
+	g.DFSRecursive(5);
 }
 
 
 void TestGraph() {
-	TestAdjacencylist();
+	testGraph();
 }
