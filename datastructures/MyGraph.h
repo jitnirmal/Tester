@@ -42,7 +42,7 @@ public:
 
 	void DFSRecursive(int v)
 	{
-		std::cout << "DFS : (" << v << ")";
+		std::cout << "DFS : (" << v << ") : ";
 		std::vector<bool> isVisited(mNumOfVertices, false);
 		DFSRecursive(v, isVisited);
 		std::cout << std::endl;
@@ -53,7 +53,7 @@ public:
 		std::vector<bool> isVisited(mNumOfVertices, false);
 		std::list<int> queue;
 		queue.push_back(v);
-		std::cout << "BFS : (" << v << ")";
+		std::cout << "BFS : (" << v << ") : ";
 		while (!queue.empty())
 		{
 			int qi = queue.front();
@@ -139,6 +139,11 @@ void testGraph()
 	g.BFSIterative(5);
 	g.DFSRecursive(5);
 	g.topologicalSort();
+
+	/*
+	BFS: (5) : 5 2 0 3 1
+	DFS : (5) : 5 2 3 1 0
+	toposort : 4 5 2 0 3 1 */
 }
 
 
