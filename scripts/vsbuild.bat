@@ -1,6 +1,6 @@
 ECHO OFF
 ECHO starting program
 cd ..
-cmake -H. -Bvsbuild
-cmake --build vsbuild --
+cmake -H. -B..\..\vsbuildOut -Drun_gcov=0
+cmake --build ..\..\vsbuildOut -- /maxcpucount:8
 PAUSE

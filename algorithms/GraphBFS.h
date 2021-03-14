@@ -59,9 +59,6 @@ public:
 	void BFS(int v) {
 		BFSIterative(v);
 	}
-
-	
-
 };
 
 
