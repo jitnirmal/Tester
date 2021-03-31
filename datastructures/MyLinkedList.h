@@ -214,8 +214,7 @@ int testList()
 {
 	try 
 	{
-		auto slots = maxPeopleEntrySlot();
-
+		
 		LinkedList<int> lt = {1,2,3,4,5,6,7};
 		LinkedList<int> lt2 = lt;
 

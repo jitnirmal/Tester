@@ -15,7 +15,8 @@ using namespace std;
 /// <summary>
 /// The signature of a std::function is defined as follows:
 ///			--- std::function< return_type ( parameter0, parameter1...) > 
-///			--- std::function returning nothing and having no parameters is defined like this...
+///			--- std::function returning 
+///  and having no parameters is defined like this...
 ///				 -- auto func = std::function<void(void)>{};
 ///			--- A std::function returning a bool and having an int and a std::string as parameters is defined like this:
 ///				-- auto func = std::function<bool(int, std::string)>{};  

@@ -98,7 +98,8 @@ int is_big_endian(void)
 /// <summary>
 /// check is called twicely by sort
 /// </summary>
-bool check(const string& a, const string& b) {
+bool check(const string& a, const string& b) 
+{
 	return a.length() == b.length() ? a < b : a.length() < b.length();
 }
 

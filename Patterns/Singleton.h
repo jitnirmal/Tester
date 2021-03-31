@@ -52,6 +52,10 @@ class CallOnceSingleton{
 	  }
 };
 
+
+CallOnceSingleton* CallOnceSingleton::instance = nullptr;
+std::once_flag CallOnceSingleton::initInstanceFlag;
+
 class X {
 public:
 	static X * instance()
@@ -74,8 +78,6 @@ private:
 
 
 
-CallOnceSingleton* CallOnceSingleton::instance = nullptr;
-std::once_flag CallOnceSingleton::initInstanceFlag;
 
 void testCallOnceSingleton() {
 

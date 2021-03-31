@@ -3,6 +3,22 @@
 #include <iostream>
 #include <queue>
 #include <list>
+#include <stack>
+#include <string>
+
+/*
+* Find the minimum depth of a binary tree
+https://www.techiedelight.com/find-minimum-depth-binary-tree/
+
+Print right view of a binary tree
+https://www.techiedelight.com/print-right-view-binary-tree/
+
+Spiral order traversal of a binary tree
+https://www.techiedelight.com/spiral-order-traversal-binary-tree/
+
+
+*/
+
 
 template<typename T>
 class Node {
@@ -22,88 +38,227 @@ public:
 
 template<typename T>
 class BinaryTree {
+	using NodeType = Node<T>;
+	using NodePtr = NodeType*;
+
 public:
 	BinaryTree() noexcept :_root(nullptr) {}
+
+	BinaryTree(std::vector<T>& nodes)
+	{
+		_root = createMinimalBST(nodes, 0, nodes.size() - 1);
+	}
+
 
 	void add(T value) {
 		_root = addRecursive(_root, value);
 	}
 
-	bool containsNode(T value) {
-		//return containsNodeRecursive(_root, value);
+	bool containsNode(T value)  const noexcept
+	{
 		return containsNodeIterative(_root, value);
 	}
+
+
+
 	//Depth-First Search
 	// goes deep as much as possible in every child before exploring the next sibling
-	void traverseInOrder() {
+	void TraverseInOrder()
+	{
 		std::cout << "in order traverse : ";
 		traverseInOrder(_root);
-		std::cout <<  "\n";
+		std::cout << "\n";
 	}
 
-	void traversePreOrder() {
+	void TraverseInOrderIterative() const noexcept
+	{
+		traverseInOrderIterative(_root);
+		std::cout << "\n";
+	}
+
+	void TraversePreOrder() const noexcept
+	{
 		std::cout << "pre order traverse : ";
 		traversePreOrder(_root);
 		std::cout << "\n";
 	}
-	void traversePostOrder() {
+
+	void TraversePostOrder() const noexcept
+	{
 		std::cout << "pre order traverse : ";
 		traversePostOrder(_root);
 		std::cout << "\n";
 	}
-	
+
 	//Breadth-First Search
-	void traverseLevelOrder() {
+	void TraverseLevelOrder()  const noexcept
+	{
 		std::cout << "level order traverse : ";
 		if (_root == nullptr) {
 			return;
 		}
-		traverseLevelOrder(_root);
-	
+
+		traverseLevelOrder();
 	}
 
-	void remove(T value) {
+	void remove(T value)
+	{
 		removeRecursive(_root, value);
 	}
-	
+
+	int Height()
+	{
+		auto result = height(_root);
+		std::cout << "height is  : " << result << std::endl;
+		return result;
+	}
+
+	bool IsBalanced()
+	{
+		auto result = isBalanced(_root);
+		auto message = (result == true) ? "Tree is Balanced" : "Tree is not balanced";
+		std::cout << message << std::endl;
+		return result;
+	}
+
+	void PrintLevelOrderTree()
+	{
+		auto lists = getLevelLinkedList(_root);
+		for (const auto& list : lists)
+		{
+			for (const auto& item : list)
+			{
+				auto left = item.left ? std::to_string(item.left->value) : "NA";
+				auto right = item.right ? std::to_string(item.right->value) : "NA";
+
+				std::cout << item.value << " (" << left << "," << right << ")   |  ";
+			}
+			std::cout << "\n-----------------------------\n";
+		}
+	}
+
+	NodePtr createMinimalBST(std::vector<T> arr, int start, int end)
+	{
+		if (end < start)
+		{
+			return nullptr;
+		}
+
+		int mid = (start + end) / 2;
+		auto node = new NodeType(arr[mid]);
+
+		node->left = createMinimalBST(arr, start, mid - 1);
+		node->right = createMinimalBST(arr, mid + 1, end);
+		return node;
+	}
+
 private:
 
-	void traverseLevelOrder(Node<T>* Node) {
-		std::list<Node<T>*> nodes;
+	int height(NodePtr node) const noexcept
+	{
+		if (!node)
+			return -1;
+		auto lDepth = height(node->left);
+		auto rDepth = height(node->right);
+
+		auto height = lDepth > rDepth ? (lDepth + 1) : (rDepth + 1);
+		//std::cout << node->value << "(" << height << ")" << " ";
+
+		return height;
+	}
+
+	void traverseLevelOrder() const noexcept
+	{
+		std::list<NodePtr> nodes;
 		nodes.push_back(_root);
 
-		while (!nodes.empty()) {
+		while (!nodes.empty())
+		{
 			auto Node = nodes.front();
 			nodes.pop_front();
 
 			std::cout << Node->value << " ";
 
-			if (Node->left != nullptr) {
+			if (Node->left != nullptr)
+			{
 				nodes.push_back(Node->left);
 			}
 
-			if (Node->right != nullptr) {
+			if (Node->right != nullptr)
+			{
 				nodes.push_back(Node->right);
 			}
 		}
 	}
 
-	void traverseInOrder(Node<T>* Node) {
+	void traverseInOrderIterative(NodePtr node) const noexcept
+	{
+		std::stack<NodePtr> nodeStack;
+		NodePtr current = node;
+		while (!nodeStack.empty() || current)
+		{
+			if (current)
+			{
+				nodeStack.push(current);
+				current = current->left;
+			}
+			else
+			{
+				current = nodeStack.top();
+				nodeStack.pop();
+				std::cout << current->value << " ";
+				current = current->right;
+			}
+		}
+	}
+
+	void traverseInOrder(NodePtr Node) const noexcept
+	{
 		if (Node != nullptr) {
 			traverseInOrder(Node->left);
 			std::cout << Node->value << " ";
 			traverseInOrder(Node->right);
 		}
 	}
-	
-	void traversePreOrder(Node<T>* Node) {
+
+	void traversePreOrder(NodePtr Node) const noexcept
+	{
 		if (Node != nullptr) {
-			std::cout << Node->value <<" ";
+			std::cout << Node->value << " ";
 			traversePreOrder(Node->left);
 			traversePreOrder(Node->right);
 		}
 	}
-	void traversePostOrder(Node<T>* Node) {
+
+	void traversePreOrderIterative(NodePtr node) const noexcept
+	{
+		std::stack<NodePtr> nodeStack;
+		auto current = node;
+		nodeStack.push(current);
+
+		std::queue<T> result;
+
+		while (!nodeStack.empty())
+		{
+			auto node = nodeStack.top(); nodeStack.pop();
+			result.push(node->value);
+
+			if (node->right)
+				nodeStack.push(node->right);
+
+			if (node->left)
+				nodeStack.push(node->left);
+		}
+
+		while (!result.empty())
+		{
+			std::cout << result.front() << " ";
+			result.pop();
+		}
+	}
+
+	void traversePostOrder(NodePtr Node) const noexcept
+	{
 		if (Node != nullptr) {
 			traversePostOrder(Node->left);
 			traversePostOrder(Node->right);
@@ -111,9 +266,37 @@ private:
 		}
 	}
 
-	Node<T>* addRecursive(Node<T>* current, T value) {
+	void traversePostOrderIterative(NodePtr node) const noexcept
+	{
+		std::stack<NodePtr> nodeStack;
+		nodeStack.push(node);
+
+		std::stack<T> result;
+
+		while (!nodeStack.empty())
+		{
+			auto node = nodeStack.top(); nodeStack.pop();
+			result.push(node->value);
+
+			if (node->left)
+				nodeStack.push(node->left);
+
+			if (node->right)
+				nodeStack.push(node->right);
+
+		}
+
+		while (!result.empty())
+		{
+			std::cout << result.top() << " ";
+			result.pop();
+		}
+	}
+
+	NodePtr addRecursive(NodePtr current, T value)
+	{
 		if (current == nullptr) {
-			return new Node<T>(value);
+			return new NodeType(value);
 		}
 
 		if (value < current->value) {
@@ -129,8 +312,11 @@ private:
 
 		return current;
 	}
-	
-	bool containsNodeRecursive(Node<T>* current, T value) {
+
+
+
+	bool containsNodeRecursive(NodePtr current, T value) const noexcept
+	{
 		if (current == nullptr) {
 			return false;
 		}
@@ -141,23 +327,15 @@ private:
 			? containsNodeRecursive(current->left, value)
 			: containsNodeRecursive(current->right, value);
 	}
-	/*
-	Node x = root;
-        while (x != null) {
-            int res = key.compareTo(x.key);
-            if      (res < 0) x = x.left;
-            else if (res > 0) x = x.right;
-            else return x.val;
-        }
-        return null;
-	*/
-		
 
-	bool containsNodeIterative(Node<T>* current, T value) {
-		Node<T>* currentNode = current;
-		while (currentNode !=  nullptr)
+
+	bool containsNodeIterative(NodePtr current, T value)  const noexcept
+	{
+		NodePtr currentNode = current;
+		while (currentNode != nullptr)
 		{
-			if (value == currentNode->value) {
+			if (value == currentNode->value)
+			{
 				return true;
 			}
 			else if (value > currentNode->value)
@@ -172,8 +350,7 @@ private:
 		return false;
 	}
 
-
-	Node<T>* removeRecursive(Node<T>* current, T value) {
+	NodePtr removeRecursive(NodePtr current, T value) {
 		if (current == nullptr) {
 			return nullptr;
 		}
@@ -209,15 +386,53 @@ private:
 		return current;
 	}
 
-	T findSmallestValue(Node<T>* root) {
+	T findSmallestValue(NodePtr root) {
 		return root->left == nullptr ? root->value : findSmallestValue(root->left);
 	}
 
+	std::vector<std::list<NodeType>> getLevelLinkedList(NodePtr node)
+	{
+		auto result = std::vector<std::list<NodeType>>();
+		auto currentLevelList = std::list<NodeType>();
+		if (node)
+		{
+			currentLevelList.push_back(NodeType(*node));
+		}
 
-	
+		while (!currentLevelList.empty())
+		{
+			result.emplace_back(currentLevelList);
+			auto parents = currentLevelList;
+			currentLevelList.clear();
+			for (const auto& parent : parents)
+			{
+				if (parent.left)
+				{
+					currentLevelList.push_back(NodeType(*(parent.left)));
+				}
+				if (parent.right)
+				{
+					currentLevelList.push_back(NodeType(*(parent.right)));
+				}
+			}
+		}
+		return result;
+	}
+
+	bool isBalanced(NodePtr node)
+	{
+		if (!node) return true;
+
+		int heightDiff = height(node->left) - height(node->right);
+
+		if (std::abs(heightDiff) > 1)
+			return false;
+
+		return isBalanced(node->left) && isBalanced(node->right);
+	}
 
 private:
-	Node<T>* _root;
+	NodePtr _root;
 
 };
 
@@ -225,28 +440,28 @@ private:
 
 void TestBinaryTree()
 {
-	BinaryTree<int> bt;
+	std::vector<int> v = { 1, 2, 3, 4, 5, 6, 7, 8 };
+	BinaryTree<int> bt(v);
 
-	bt.add(6);
-	bt.add(4);
-	bt.add(8);
-	bt.add(3);
-	bt.add(5);
-	bt.add(7);
-	bt.add(9);
-	bt.add(2);
+	bt.PrintLevelOrderTree();
+	bt.TraverseInOrder();
+	bt.Height();
+	bt.IsBalanced();
 
-	bt.remove(2);
+	//bt.TraversePreOrder();
+	//bt.TraversePostOrder();
+	//bt.TraverseLevelOrder();
 
-	bt.traverseInOrder();
-	bt.traversePreOrder();
-	bt.traversePostOrder();
-	bt.traverseLevelOrder();
-	if (bt.containsNode(15) == false){
+	if (bt.containsNode(15) == false) {
 		std::cout << "value not expected" << std::endl;
 	}
-	
+
 	if (bt.containsNode(8) == true) {
 		std::cout << "value expected" << std::endl;
 	}
+}
+
+int main()
+{
+	TestBinaryTree();
 }

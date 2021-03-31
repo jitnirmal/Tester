@@ -27,6 +27,7 @@ int calculateMinCost(std::vector<int>& arr) {
 		//std::cout << "d=" << d << " || -----------------" << std::endl;
 
 		// Possibility #2: seven-day pass ending on or after day d:
+		// here we check current cost vs ( going 7 days in past, check the price that day + 7 day pass cost)
 		int prevD = std::max(0, d - 7);
 		minCost = std::min(minCost, minCostUpThroughDay[prevD] + 7);
 

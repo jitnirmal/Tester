@@ -39,6 +39,7 @@ public:
 		return hashVal;
 	}
 };
+
 struct A
 {
 	A(int i) :IntI(i) {}
