@@ -41,11 +41,13 @@ public:
 		}
 	}
 
-	bool IsEmpty();
-	void Insert(int key);
-	int ExtractMax();
-	int GetMax();
-	void print(){
+	bool IsEmpty() const noexcept;
+	void Insert(int key) noexcept;
+	int ExtractMax() noexcept;
+	int GetMax() noexcept;
+	
+	void print()
+	{
 		for (size_t index = 1; index <= heapSize; ++index)
 		{
 			std::cout << vect[index] << ", ";
@@ -54,10 +56,8 @@ public:
 	}
 };
 
-bool BinaryHeap::IsEmpty()
+bool BinaryHeap::IsEmpty() const noexcept
 {
-	// Heap is empty if only
-	// heapSize = 0
 	return heapSize == 0;
 }
 

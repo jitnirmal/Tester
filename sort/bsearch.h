@@ -25,6 +25,50 @@ int binarySearch(int arr[], int l, int r, int x){
 }
 
 
+template<typename T>
+int binarySearch(T arr[], int start, int end, const T& element)
+{
+	if (end < start)
+		return -1;
+
+	int mid = (start + end) / 2;
+
+	if (element == arr[mid])
+	{
+		return mid;
+	}
+	else if (element < arr[mid])
+	{
+		return binarySearch(arr, start, mid - 1, element);
+	}
+	else
+	{
+		return binarySearch(arr, mid + 1, end, element);
+	}
+}
+
+template<>
+int binarySearch<int>(int arr[], int start, int end, const int& element)
+{
+	if (end < start)
+		return -1;
+
+	int mid = (start + end) / 2;
+
+	if (element == arr[mid])
+	{
+		return mid;
+	}
+	else if (element < arr[mid])
+	{
+		return binarySearch(arr, start, mid - 1, element);
+	}
+	else
+	{
+		return binarySearch(arr, mid + 1, end, element);
+	}
+}
+
 template <typename Time = std::chrono::nanoseconds>
 uint64_t T_STD_sorted_vector_std_bseach() {
 	auto data = getData(MAX_SIZE);

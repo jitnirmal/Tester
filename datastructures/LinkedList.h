@@ -139,22 +139,60 @@ public:
 		_head =  prev;
 	}
 
+	void CreateCycle(const size_t size)
+	{
+		if (size >= size_ - 1)
+			return;
 
+		NodeType* currentNode = list_;
+		for (size_t sz = 0; sz < size; ++sz)
+		{
+			currentNode = currentNode->Next;
+		}
+
+		NodeType* endNode = list_;
+		while (endNode->Next != nullptr)
+		{
+			endNode = endNode->Next;
+		}
+		endNode->Next = currentNode;
+	}
 
 	void PrintList()
 	{
-		LNode<T>* currentNode = _head;
-		if (currentNode == nullptr)
+		if (!DetectCycle())
 		{
-			printf("%s\n", "list is empty");
-			return;
+			NodeType* currentNode = list_;
+			std::cout << "< " << std::endl;
+			while (currentNode != nullptr)
+			{
+				std::cout << " " << currentNode->Data;
+				currentNode = currentNode->Next;
+			}
+			std::cout << " >" << std::endl;
 		}
-		
-		while (currentNode != nullptr) {
-			std::cout << " " << currentNode->data;
-			currentNode = currentNode->next;
+		else
+		{
+			std::cout << "List will not be printed as there is loop " << std::endl;
 		}
-		std::cout <<" **"<< std::endl;
+	}
+
+	bool DetectCycle()
+	{
+		NodeType* slow = list_;
+		NodeType* fast = list_;
+		while (slow != nullptr && fast != nullptr && fast->Next != nullptr)
+		{
+			std::cout << "sl : " << slow << " : " << slow->Data << "ft : " << fast << " : " << fast->Data << std::endl;
+			slow = slow->Next;
+			fast = fast->Next->Next;
+			if (slow == fast)
+			{
+				std::cout << "loop detected " << slow << " : " << slow->Data << std::endl;
+				return true;
+			}
+		}
+		return false;
 	}
 
 private:

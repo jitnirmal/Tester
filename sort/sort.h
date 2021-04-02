@@ -21,6 +21,57 @@
 /// 5) stable_partition :
 /// /// </summary>
 
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+auto printVec(const std::vector<int>& v)
+{
+	for (const auto& item : v)
+	{
+		std::cout << item << " ";
+	}
+	std::cout << std::endl;
+}
+
+auto printArr(int arr[], size_t size)
+{
+	for (size_t out = 0; out < size; ++out)
+	{
+		std::cout << arr[out] << " ";
+	}
+	std::cout << std::endl;
+}
+
+void bubbleSort(int arr[], size_t size)
+{
+	for (size_t out = size; out > 0; --out)
+	{
+		auto swapped = false;
+		for (size_t in = 0; in < out - 1; ++in)
+		{
+			if (arr[in] > arr[in + 1])
+			{
+				std::swap(arr[in], arr[in + 1]);
+				swapped = true;
+			}
+		}
+		if (swapped == false) break;
+		printArr(arr, size);
+
+	}
+}
+
+// To execute C++, please define "int main()"
+void testBubbleSort() {
+	std::vector<int> v = { 4,2,5,1,3 };
+	printVec(v);
+	bubbleSort(v.data(), v.size());
+	std::cout << "testing ends " << std::endl;
+}
+
+
 template<class ForwardIt, class Compare>
 ForwardIt min_element(ForwardIt first, ForwardIt last,
 	Compare comp)
