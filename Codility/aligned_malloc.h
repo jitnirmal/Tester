@@ -7,6 +7,30 @@
 ///  https://blog.csdn.net/ybhou/article/details/12658349
 /// </summary>
 
+#include <cstdlib>
+#include <new>
+#include <type_traits>
+#include <cassert>
+
+template <typename T>
+T* aligned_malloc(std::size_t count, std::size_t alignment) 
+{
+    static_assert(std::is_trivial<T>::value, "aligned_malloc can only be used with trivial types");
+    static_assert(alignment % alignof(T) == 0, "alignment must be a multiple of alignof(T)");
+    void *ptr = nullptr;
+    if (posix_memalign(&ptr, alignment, count * sizeof(T))) 
+    {
+        throw std::bad_alloc();
+    }
+    return static_cast<T*>(ptr);
+}
+
+template <typename T>
+void aligned_free(T* ptr) 
+{
+    free(ptr);
+}
+
 void* aligned_malloc(size_t required_bytes, size_t alignment) {
 
 	// original block
