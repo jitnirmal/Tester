@@ -57,6 +57,32 @@ void aligned_free(void *parent) {
 	free(((void**)parent)[-1]);
 }
 
+void* aligned_malloc(size_t required_bytes, size_t alignment) {
+    void *ptr = NULL;
+
+    // Allocate extra memory to store the offset
+    size_t total_size = required_bytes + alignment - 1 + sizeof(size_t);
+    void *raw_ptr = malloc(total_size);
+    if (!raw_ptr) {
+        return NULL;
+    }
+
+    // Calculate the aligned pointer by adding the offset
+    ptr = (void*) (((size_t) raw_ptr + alignment - 1 + sizeof(size_t)) & ~(alignment - 1));
+
+    // Store the offset for future use
+    *(((size_t*) ptr) - 1) = (size_t) ptr - (size_t) raw_ptr;
+
+    return ptr;
+}
+
+void aligned_free(void *ptr) {
+    // Calculate the raw pointer from the offset
+    void *raw_ptr = (void*) ((size_t) ptr - *(((size_t*) ptr) - 1));
+
+    free(raw_ptr);
+}
+
 int testMemory()
 {
 	void* mem = aligned_malloc(100, 128);
